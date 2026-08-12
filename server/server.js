@@ -72,16 +72,16 @@ app.use(express.static(rootDir, {
   }
 }));
 
-// 7. 404 Handler for API Routes
-app.all('/api/*', (req, res) => {
+// 7. 404 Handler for Unknown API Routes
+app.use('/api', (req, res) => {
   res.status(404).json({
     success: false,
     error: `Endpoint '${req.originalUrl}' not found on this server`
   });
 });
 
-// 8. SPA Fallback (Serve index.html for unknown frontend routes)
-app.get('*', (req, res) => {
+// 8. SPA Fallback (Serve index.html for frontend navigation)
+app.use((req, res) => {
   res.sendFile(path.join(rootDir, 'index.html'));
 });
 
