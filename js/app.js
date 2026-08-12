@@ -3860,6 +3860,15 @@ class UniSphereApp {
       const installBtn = document.getElementById("pwaInstallBtn");
       if (installBtn) installBtn.style.display = "flex";
     });
+
+    // Check if running as installed standalone app on mobile
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (!isStandalone && window.innerWidth < 1024) {
+      setTimeout(() => {
+        const mobBanner = document.getElementById("mobilePwaInstallBanner");
+        if (mobBanner) mobBanner.style.display = "flex";
+      }, 3500);
+    }
   }
 
   promptPWAInstall() {

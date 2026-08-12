@@ -4047,4 +4047,36 @@ img {
   100% { background-position: -200% 0; }
 }
 
+/* ==========================================================================
+   MOBILE PWA INSTALL BOTTOM FLOATING BANNER
+   ========================================================================== */
+.mobile-pwa-bottom-banner {
+  position: fixed;
+  bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  left: 0.85rem;
+  right: 0.85rem;
+  background: var(--bg-card);
+  border: 1.5px solid var(--primary-400);
+  border-radius: var(--radius-xl);
+  padding: 0.75rem 1rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  z-index: 990;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@media (min-width: 1024px) {
+  .mobile-pwa-bottom-banner {
+    display: none !important;
+  }
+}
+
+
 
