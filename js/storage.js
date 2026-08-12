@@ -118,15 +118,16 @@ class StorageManager {
         const parsed = JSON.parse(stored);
         return {
           profile: { ...DEFAULT_DATA.profile, ...(parsed.profile || {}) },
-          subjects: parsed.subjects || DEFAULT_DATA.subjects,
-          timetable: parsed.timetable || DEFAULT_DATA.timetable,
-          assignments: parsed.assignments || DEFAULT_DATA.assignments,
-          exams: parsed.exams || DEFAULT_DATA.exams,
-          notes: parsed.notes || DEFAULT_DATA.notes,
-          events: parsed.events || DEFAULT_DATA.events,
-          notices: parsed.notices || DEFAULT_DATA.notices,
-          expenses: parsed.expenses || DEFAULT_DATA.expenses,
-          travel: parsed.travel || DEFAULT_DATA.travel || []
+          subjects: parsed.subjects || DEFAULT_DATA.subjects || [],
+          timetable: parsed.timetable || DEFAULT_DATA.timetable || {},
+          assignments: parsed.assignments || DEFAULT_DATA.assignments || [],
+          exams: parsed.exams || DEFAULT_DATA.exams || [],
+          notes: parsed.notes || DEFAULT_DATA.notes || [],
+          events: parsed.events || DEFAULT_DATA.events || [],
+          notices: parsed.notices || DEFAULT_DATA.notices || [],
+          expenses: parsed.expenses || DEFAULT_DATA.expenses || { monthlyBudget: 10000, items: [] },
+          travel: parsed.travel || DEFAULT_DATA.travel || [],
+          calendarActivities: parsed.calendarActivities || DEFAULT_DATA.calendarActivities || []
         };
       }
     } catch (e) {
