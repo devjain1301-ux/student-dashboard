@@ -327,7 +327,7 @@
               </div>
 
               <!-- Today Highlights Grid: Next Class Live Card + Today Stats Summary -->
-              <div style="display:grid; grid-template-columns: 1.25fr 1fr; gap:1.25rem; margin-top:1rem; align-items:stretch;">
+              <div class="today-hub-grid">
                 
                 <!-- Next Lecture Live Countdown Card -->
                 <div class="today-next-lecture-box" id="todayNextLectureBox">
@@ -335,7 +335,7 @@
                 </div>
 
                 <!-- Today Schedule Snapshot & Attendance Health -->
-                <div style="display:flex; flex-direction:column; gap:0.75rem; justify-content:space-between;">
+                <div class="today-snap-column">
                   
                   <!-- Snapshot Item 1: Attendance Risk Summary -->
                   <div class="today-snap-card" onclick="app.navigateTo('attendance')" style="cursor:pointer;">
@@ -360,7 +360,7 @@
                   </div>
 
                   <!-- Snapshot Item 3: Quick Action Bar -->
-                  <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                  <div class="today-quick-actions-row">
                     <button class="badge-tag" onclick="app.openModal('modalLogStudy')" style="background:rgba(79,70,229,0.12); color:var(--primary-700); font-weight:700;">🧠 + Study Sprint</button>
                     <button class="badge-tag" onclick="app.openModal('modalAddAssignment')" style="background:rgba(236,72,153,0.12); color:#ec4899; font-weight:700;">📋 + Task</button>
                     <button class="badge-tag" onclick="app.openModal('modalAddNote')" style="background:rgba(16,185,129,0.12); color:#059669; font-weight:700;">📝 + Note</button>
@@ -377,10 +377,10 @@
           <!-- WIDGET 2: 🧠 STUDY STREAK & 🏆 STUDENT LEVEL GAMIFICATION -->
           <div class="dashboard-widget" id="widgetGamification" style="margin-bottom: 1.5rem;">
             <div class="card" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.06) 0%, rgba(236, 72, 153, 0.06) 100%); border: 1.5px solid rgba(245, 158, 11, 0.3);">
-              <div style="display:grid; grid-template-columns: 1fr 1.25fr; gap:1.5rem; align-items:center;">
+              <div class="gamification-grid">
                 
                 <!-- Left: Flame Streak & Weekly Heatmap -->
-                <div style="display:flex; align-items:center; gap:1.25rem; border-right:1px solid var(--border-light); padding-right:1rem;">
+                <div class="streak-left-box">
                   <div class="streak-flame-circle">
                     <span class="streak-flame-icon">🔥</span>
                     <span class="streak-number" id="dashStreakCount">5</span>
@@ -401,7 +401,7 @@
                 </div>
 
                 <!-- Right: Student Level & Animated XP Bar -->
-                <div>
+                <div class="gamification-right-box">
                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
                     <div style="display:flex; align-items:center; gap:0.5rem;">
                       <span class="student-level-badge" id="dashStudentLevelBadge">Level 3</span>
