@@ -1,0 +1,24 @@
+{
+  "name": "College Dashboard - Student Academic Portal",
+  "short_name": "CollegeHub",
+  "description": "All-in-one student dashboard for attendance, timetable, CGPA, exams, notes, travel & daily campus routing.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#4F46E5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

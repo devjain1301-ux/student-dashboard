@@ -3,9 +3,14 @@
   "version": "2.0.0",
   "private": true,
   "description": "Smart College Student Dashboard - Real-time timetable, 75% attendance predictor, study notes with PDF attachments, transit ticket tracker, CGPA calculator, and 4-digit security PIN vault.",
+  "main": "main.js",
   "scripts": {
     "dev": "serve -l 5173 .",
-    "start": "serve ."
+    "start": "serve .",
+    "build:app": "node scripts/sync-app.js",
+    "cap:sync": "node scripts/sync-app.js ; npx cap sync android",
+    "cap:open:android": "npx cap open android",
+    "desktop": "electron ."
   },
   "keywords": [
     "college-dashboard",
@@ -17,5 +22,10 @@
     "travel-tracker"
   ],
   "author": "Dev Jain",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0"
+  }
 }
