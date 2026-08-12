@@ -1799,15 +1799,14 @@
           <img src="assets/logo.jpg" alt="College Dashboard Logo" style="width:42px; height:42px; border-radius:10px; object-fit:cover; border:1.5px solid rgba(255,255,255,0.4); box-shadow:0 4px 10px rgba(0,0,0,0.2);" />
           <div>
             <h3 style="font-size: 1.25rem; font-weight: 800; color:white;">College Dashboard Setup</h3>
-            <span style="font-size: 0.76rem; color: #C7D2FE;">Student Portal Verification & Course Customization</span>
+            <span style="font-size: 0.76rem; color: #C7D2FE;">Mandatory Student Identity & Security PIN Setup</span>
           </div>
         </div>
-        <button type="button" class="btn btn-secondary" style="color:white; background:rgba(255,255,255,0.15); border:none; font-size:1rem; padding:0.25rem 0.6rem;" onclick="app.closeModal('modalStudentLogin')" title="Close and explore dashboard">✕</button>
       </div>
       <form id="studentLoginForm">
         <div class="modal-body" style="padding: 1.5rem; overflow-y:auto; max-height:calc(85vh - 140px);">
-          <div style="background: var(--primary-50); border: 1px solid var(--primary-100); border-radius: var(--radius-md); padding: 0.85rem 1rem; font-size: 0.82rem; color: var(--primary-900); margin-bottom: 1.25rem;">
-            🔒 <strong>Verification Notice:</strong> Please provide your valid <strong>Gmail address</strong> and <strong>Phone number</strong> to initialize and personalize your college schedule, timetable & academic records.
+          <div style="background: var(--primary-50); border: 1px solid var(--primary-200); border-radius: var(--radius-md); padding: 0.85rem 1rem; font-size: 0.82rem; color: var(--primary-900); margin-bottom: 1.25rem;">
+            🔒 <strong>Mandatory Security Gate:</strong> Please provide your valid <strong>Gmail address</strong> and create your private <strong>4-Digit Security PIN</strong>. This ensures your confidential grades, timetable, notes, and attendance remain strictly locked to yourself.
           </div>
 
           <div class="form-group">
@@ -1817,7 +1816,7 @@
 
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
             <div class="form-group">
-              <label class="form-label">Gmail / College Email <span style="color:var(--danger);">*</span></label>
+              <label class="form-label">Gmail / Student Email <span style="color:var(--danger);">* (Mandatory)</span></label>
               <input type="email" class="form-control" id="loginInputEmail" placeholder="student@gmail.com" required />
             </div>
             <div class="form-group">
@@ -1865,22 +1864,29 @@
             </div>
           </div>
 
-          <!-- Optional 4-Digit Security PIN -->
-          <div class="form-group" style="background:var(--bg-card-subtle); padding:0.85rem 1rem; border-radius:var(--radius-md); border:1px solid var(--border-color); margin-top:0.5rem;">
+          <!-- Mandatory 4-Digit Security PIN Creation -->
+          <div class="form-group" style="background:var(--bg-card-subtle); padding:1rem 1.15rem; border-radius:var(--radius-md); border:1.5px solid var(--primary-400); margin-top:0.75rem;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.25rem;">
-              <label class="form-label" style="margin-bottom:0; font-weight:700; color:var(--primary-700);">🔒 Create 4-Digit Security PIN (Private Vault)</label>
-              <span style="font-size:0.72rem; color:var(--primary-600); font-weight:600;">Recommended</span>
+              <label class="form-label" style="margin-bottom:0; font-weight:800; color:var(--primary-700);">🔒 Create 4-Digit Security PIN <span style="color:var(--danger);">* (Mandatory)</span></label>
+              <span style="font-size:0.72rem; color:var(--danger); font-weight:800;">Required</span>
             </div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.6rem;">Protect your CGPA, attendance, travel tickets, and study notes from roommates on shared devices.</div>
-            <input type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" class="form-control" id="loginInputPin" placeholder="••••" style="letter-spacing:6px; font-weight:800; font-size:1.3rem; text-align:center;" />
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.75rem;">You will need this 4-digit PIN every time you open this dashboard.</div>
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.85rem;">
+              <div>
+                <label style="font-size:0.75rem; font-weight:700; color:var(--text-heading); display:block; margin-bottom:0.25rem;">New PIN (4 Digits)</label>
+                <input type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" class="form-control" id="loginInputPin" placeholder="••••" style="letter-spacing:6px; font-weight:800; font-size:1.3rem; text-align:center;" required />
+              </div>
+              <div>
+                <label style="font-size:0.75rem; font-weight:700; color:var(--text-heading); display:block; margin-bottom:0.25rem;">Confirm PIN (4 Digits)</label>
+                <input type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" class="form-control" id="loginInputPinConfirm" placeholder="••••" style="letter-spacing:6px; font-weight:800; font-size:1.3rem; text-align:center;" required />
+              </div>
+            </div>
           </div>
         </div>
-        <div class="modal-footer" style="display:flex; flex-direction:column; gap:0.5rem;">
-          <button type="submit" class="btn btn-primary" style="width:100%; padding:0.85rem; font-size:1rem;">
-            🚀 Verify & Access Dashboard
-          </button>
-          <button type="button" class="btn btn-secondary" style="width:100%; font-size:0.82rem; padding:0.45rem;" onclick="app.closeModal('modalStudentLogin')">
-            👁️ Explore Dashboard First (View All Details)
+        <div class="modal-footer" style="padding: 1.25rem 1.5rem;">
+          <button type="submit" class="btn btn-primary" style="width:100%; padding:0.9rem; font-size:1rem; font-weight:800; box-shadow:0 4px 14px var(--primary-glow);">
+            🚀 Save Security Profile & Access Dashboard
           </button>
         </div>
       </form>

@@ -129,7 +129,7 @@ class UniSphereApp {
   checkStudentVerification() {
     const prof = this.storage.data.profile;
     const modal = document.getElementById("modalStudentLogin");
-    if (!prof.isVerified || !prof.email || !prof.phone || !prof.name) {
+    if (!prof.isVerified || !prof.email || !prof.securityPin || String(prof.securityPin).length !== 4) {
       if (modal) {
         modal.classList.add("active");
         this.onStreamSelectChange("loginInputStream", "loginInputBranch");
@@ -2104,9 +2104,26 @@ class UniSphereApp {
       const branch = document.getElementById("loginInputBranch").value;
       const semester = parseInt(document.getElementById("loginInputSemester").value) || 1;
       const college = document.getElementById("loginInputCollege").value.trim();
+      const pinVal = document.getElementById("loginInputPin")?.value.trim();
+      const pinConfirm = document.getElementById("loginInputPinConfirm")?.value.trim();
 
       if (!email || !phone || !name) {
         alert("Please enter all required student details including Gmail and Phone number.");
+        return;
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert("Please enter a valid Gmail / College Email address.");
+        return;
+      }
+
+      if (!pinVal || pinVal.length !== 4 || !/^\d{4}$/.test(pinVal)) {
+        alert("🔒 Mandatory Requirement: Please create a valid 4-digit numeric Security PIN (e.g. 1234, 2026).");
+        return;
+      }
+
+      if (pinVal !== pinConfirm) {
+        alert("❌ 4-Digit PIN confirmation does not match. Please re-enter identical 4 digits in both PIN fields.");
         return;
       }
 
@@ -2120,7 +2137,9 @@ class UniSphereApp {
         shortCourse: branch.split(" ")[0],
         semester,
         college,
-        isVerified: true
+        isVerified: true,
+        isPinEnabled: true,
+        securityPin: pinVal
       });
 
       // Auto load branch curriculum if subjects list is empty
@@ -2146,16 +2165,14 @@ class UniSphereApp {
         this.storage.saveData();
       }
 
+      this.storage.setSecurityPin(pinVal);
+      this.isVaultUnlocked = true;
       this.closeModal("modalStudentLogin");
-      
-      const pinVal = document.getElementById("loginInputPin")?.value.trim();
-      if (pinVal && pinVal.length === 4) {
-        this.storage.setSecurityPin(pinVal);
-        const lockDot = document.getElementById("pinLockStatusDot");
-        if (lockDot) lockDot.style.background = "var(--success)";
-      }
 
-      this.showToast(`Welcome ${name}! Student verification complete 🎓`, "success");
+      const lockDot = document.getElementById("pinLockStatusDot");
+      if (lockDot) lockDot.style.background = "var(--success)";
+
+      this.showToast(`Welcome ${name}! Student verification & 4-digit PIN setup complete 🔐🎓`, "success");
     });
 
     // Add Assignment Modal Form
