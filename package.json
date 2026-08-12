@@ -1,0 +1,22 @@
+{
+  "name": "college-dashboard",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Smart College Student Dashboard - Real-time timetable, 75% attendance predictor, study notes with PDF attachments, transit ticket tracker, CGPA calculator, and 4-digit security PIN vault.",
+  "scripts": {
+    "dev": "serve -l 5173 .",
+    "start": "serve .",
+    "build": "echo 'Static assets ready for deployment'"
+  },
+  "keywords": [
+    "college-dashboard",
+    "student-portal",
+    "attendance-tracker",
+    "timetable-manager",
+    "pdf-notes",
+    "cgpa-calculator",
+    "travel-tracker"
+  ],
+  "author": "Dev Jain",
+  "license": "MIT"
+}

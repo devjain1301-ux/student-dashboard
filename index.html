@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>College Dashboard | Smart Student Portal</title>
+  <meta name="description" content="College Dashboard - Your complete student portal for timetable, attendance 75% calculator, assignments, exams, study notes, travel tickets, and hostel expenses." />
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- ========================================================================= -->
+    <!-- DESKTOP / TABLET SIDEBAR NAVIGATION                                       -->
+    <!-- ========================================================================= -->
+    <aside class="sidebar" id="appSidebar">
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <div class="brand" style="display:flex; align-items:center; gap:0.75rem;">
+          <img src="assets/logo.jpg" alt="College Dashboard Logo" style="width:42px; height:42px; border-radius:10px; object-fit:cover; box-shadow:0 4px 12px rgba(79,70,229,0.25); border:1px solid var(--border-color);" />
+          <div class="brand-text">
+            <span class="brand-title" style="font-size:1.15rem; font-weight:800; letter-spacing:-0.02em;">College Dashboard</span>
+            <span class="brand-subtitle" style="font-size:0.72rem; color:var(--text-muted);">Smart Student Portal</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Academic</div>
+
+        <a href="#dashboard" class="nav-link active" data-nav-target="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            <rect x="3" y="14" width="7" height="7" rx="1.5" />
+          </svg>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="#timetable" class="nav-link" data-nav-target="timetable">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          <span>Timetable</span>
+        </a>
+
+        <a href="#attendance" class="nav-link" data-nav-target="attendance">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+          <span>Attendance</span>
+          <span class="nav-badge" id="badgeAttendance">75% Rule</span>
+        </a>
+
+        <a href="#assignments" class="nav-link" data-nav-target="assignments">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
+          </svg>
+          <span>Assignments</span>
+          <span class="nav-badge" id="badgeAssignments">5</span>
+        </a>
+
+        <a href="#exams" class="nav-link" data-nav-target="exams">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          <span>Exams & Dates</span>
+        </a>
+
+        <div class="nav-section-title">Student Life & Tools</div>
+
+        <a href="#notes" class="nav-link" data-nav-target="notes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          </svg>
+          <span>Study Notes</span>
+        </a>
+
+        <a href="#events" class="nav-link" data-nav-target="events">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+          <span>Events & Notices</span>
+        </a>
+
+        <a href="#expenses" class="nav-link" data-nav-target="expenses">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <line x1="2" y1="10" x2="22" y2="10" />
+          </svg>
+          <span>Hostel Expenses</span>
+        </a>
+
+        <a href="#travel" class="nav-link" data-nav-target="travel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="4" y="3" width="16" height="16" rx="2"/>
+            <path d="M4 11h16"/>
+            <path d="M12 3v8"/>
+            <circle cx="8" cy="15" r="1"/>
+            <circle cx="16" cy="15" r="1"/>
+            <path d="M6 19l-2 2"/>
+            <path d="M18 19l2 2"/>
+          </svg>
+          <span>Travel & Transit</span>
+          <span class="nav-badge" id="badgeTravelCount" style="background:var(--primary-100); color:var(--primary-700);">Trains/Flights</span>
+        </a>
+
+        <a href="#profile" class="nav-link" data-nav-target="profile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          <span>Student Profile</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer (User Info & Theme) -->
+      <div class="sidebar-footer">
+        <div class="sidebar-student-card" data-nav-target="profile" style="cursor:pointer;" title="View Profile">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="user-avatar" id="sidebarUserAvatar" />
+          <div class="user-info">
+            <span class="user-name" id="sidebarStudentName">Student</span>
+            <span class="user-role" id="sidebarStudentRoll">Course • Sem 1</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ========================================================================= -->
+    <!-- MAIN WORKSPACE & TOP BAR                                                  -->
+    <!-- ========================================================================= -->
+    <main class="main-wrapper">
+      
+      <!-- Top Sticky Navbar -->
+      <header class="top-navbar">
+        <div class="header-left">
+          <button class="menu-toggle-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <div class="page-breadcrumb">
+            <h1 class="page-title" id="currentPageTitle">Overview Dashboard</h1>
+            <span class="page-subtitle" id="currentPageSubtitle">Your complete college overview & real-time analytics</span>
+          </div>
+        </div>
+
+        <!-- Global Search Bar Button -->
+        <div class="header-center">
+          <button class="global-search-btn open-search-trigger" type="button">
+            <div class="search-placeholder">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Search subjects, assignments, notes, exams...</span>
+            </div>
+            <span class="search-shortcut">⌘K / Ctrl+K</span>
+          </button>
+        </div>
+
+        <!-- Header Actions (Live Clock, Theme Switcher, Quick Actions, Lock) -->
+        <div class="header-right">
+          <div class="live-time-chip" id="headerLiveTime">
+            <span class="live-dot"></span>
+            Loading time...
+          </div>
+
+          <button class="header-btn" onclick="app.lockApp()" title="Lock Dashboard (Protect with 4-Digit PIN)" style="color:var(--primary-600); position:relative;">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <span id="pinLockStatusDot" style="position:absolute; top:4px; right:4px; width:7px; height:7px; border-radius:50%; background:var(--success);"></span>
+          </button>
+
+          <button class="header-btn theme-toggle-trigger" type="button" aria-label="Toggle Dark / Light Theme" title="Toggle Theme (Ctrl+D)">
+            <span class="theme-icon-slot">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </span>
+          </button>
+
+          <button class="header-btn" onclick="app.resetAllData()" title="Reset to Sample College Data">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Area (9 Functional Views) -->
+      <div class="content-area">
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 1: OVERVIEW DASHBOARD                                            -->
+        <!-- ===================================================================== -->
+        <section class="view-section active" id="view-dashboard">
+          
+          <!-- Hero Welcome Banner -->
+          <div class="hero-welcome-card">
+            <div class="hero-content">
+              <span class="hero-badge-pill">🎓 College Dashboard • Smart Student Portal</span>
+              <h2 class="hero-title">Welcome back, <span id="heroStudentName">Dev Jain</span> 👋</h2>
+              <p class="hero-quote" id="heroStudentCourse">B.Tech in Computer Science & Engineering • Semester 4</p>
+              <div class="hero-actions">
+                <button class="hero-btn-primary" onclick="app.openModal('modalAddAssignment')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  + Add Assignment
+                </button>
+                <button class="hero-btn-secondary" onclick="app.openChangeSemYearModal()">
+                  📅 Sem & Year
+                </button>
+                <button class="hero-btn-secondary" onclick="app.openModal('modalAddSpi')">
+                  🎓 + Add SPI / CGPA
+                </button>
+                <button class="hero-btn-secondary" onclick="app.openModal('modalAddExpense')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                  + Log Expense
+                </button>
+                <button class="hero-btn-secondary" onclick="app.navigateTo('attendance')">
+                  📊 75% Cutoff
+                </button>
+              </div>
+            </div>
+
+            <div class="hero-quick-stat" onclick="app.openModal('modalAddSpi')" style="cursor:pointer;" title="Click to Add or Update Semester SPI">
+              <div class="hero-stat-label">Cumulative CGPA</div>
+              <div class="hero-stat-value" id="heroCgpaValue">0.00</div>
+              <div class="hero-stat-detail" id="heroCgpaDetail">+ Click to Add Semester SPI &rarr;</div>
+            </div>
+          </div>
+
+          <!-- 4-Stat Metric Cards -->
+          <div class="stats-grid-4">
+            <!-- Stat 1: Attendance -->
+            <div class="stat-card" onclick="app.navigateTo('attendance')" style="cursor: pointer;">
+              <div class="stat-card-top">
+                <div class="stat-card-icon green">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <span class="stat-trend-badge positive" id="dashStatAttBadge">✓ Safe (>75%)</span>
+              </div>
+              <div>
+                <div class="stat-value" id="dashStatAttendance">81%</div>
+                <div class="stat-label">Overall Attendance</div>
+              </div>
+              <div class="stat-footer-text">
+                <span>Minimum target: 75%</span>
+                <span style="color:var(--primary-600); font-weight:700;">Details &rarr;</span>
+              </div>
+            </div>
+
+            <!-- Stat 2: Pending Tasks -->
+            <div class="stat-card" onclick="app.navigateTo('assignments')" style="cursor: pointer;">
+              <div class="stat-card-top">
+                <div class="stat-card-icon blue">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <span class="stat-trend-badge warning">Due This Week</span>
+              </div>
+              <div>
+                <div class="stat-value" id="dashStatPendingTasks">4</div>
+                <div class="stat-label">Pending Assignments</div>
+              </div>
+              <div class="stat-footer-text">
+                <span>2 high priority submissions</span>
+                <span style="color:var(--primary-600); font-weight:700;">Tasks &rarr;</span>
+              </div>
+            </div>
+
+            <!-- Stat 3: Next Exam -->
+            <div class="stat-card" onclick="app.navigateTo('exams')" style="cursor: pointer;">
+              <div class="stat-card-top">
+                <div class="stat-card-icon amber">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <span class="stat-trend-badge warning" id="dashStatExamSub">C++</span>
+              </div>
+              <div>
+                <div class="stat-value" id="dashStatNextExam">16d left</div>
+                <div class="stat-label">Mid-Term Exam Countdown</div>
+              </div>
+              <div class="stat-footer-text">
+                <span>Syllabus: 60% prepared</span>
+                <span style="color:var(--primary-600); font-weight:700;">Hall Ticket &rarr;</span>
+              </div>
+            </div>
+
+            <!-- Stat 4: Hostel / Budget Left -->
+            <div class="stat-card" onclick="app.navigateTo('expenses')" style="cursor: pointer;">
+              <div class="stat-card-top">
+                <div class="stat-card-icon green">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                </div>
+                <span class="stat-trend-badge positive">Hostel & PG</span>
+              </div>
+              <div>
+                <div class="stat-value" id="dashStatBudget">₹4,791</div>
+                <div class="stat-label">Remaining Budget</div>
+              </div>
+              <div class="stat-footer-text">
+                <span>Spent ₹7,209 / ₹12,000</span>
+                <span style="color:var(--primary-600); font-weight:700;">Tracker &rarr;</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Live Current Class Banner -->
+          <div id="dashCurrentClassBanner">
+            <!-- Populated via JS dynamically -->
+          </div>
+
+          <!-- Two Column Main Dashboard Grid -->
+          <div class="dashboard-grid-2col">
+            <!-- Left: Today's Timetable Timeline -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  </div>
+                  <div>
+                    <h3 class="card-title">Today's Class Schedule</h3>
+                    <span class="card-subtitle">Real-time room & lecture timeline</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;" onclick="app.navigateTo('timetable')">
+                  Full Timetable &rarr;
+                </button>
+              </div>
+
+              <div class="timeline-list" id="dashTodayScheduleList">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+
+            <!-- Right: Priority Tasks & Quick Cheatsheets -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  </div>
+                  <div>
+                    <h3 class="card-title">Upcoming Deliverables</h3>
+                    <span class="card-subtitle">Click checkbox to complete</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;" onclick="app.openModal('modalAddAssignment')">
+                  + Add Task
+                </button>
+              </div>
+
+              <div class="task-mini-list" id="dashQuickTasksList">
+                <!-- Populated via JS -->
+              </div>
+
+              <!-- Quick Action Bar -->
+              <div class="quick-action-bar">
+                <button class="quick-action-btn" onclick="app.navigateTo('notes')">
+                  <span>💡 Study Notes</span>
+                </button>
+                <button class="quick-action-btn" onclick="app.navigateTo('events')">
+                  <span>🎪 College Events</span>
+                </button>
+                <button class="quick-action-btn" onclick="app.navigateTo('expenses')">
+                  <span>💰 Add Expense</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 2: TIMETABLE & SCHEDULE                                          -->
+        <!-- ===================================================================== -->
+        <section class="view-section" id="view-timetable">
+          <div class="timetable-controls">
+            <div class="day-pill-tabs" id="timetableDayTabs">
+              <!-- Day buttons populated via JS -->
+            </div>
+            
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button class="btn btn-secondary" style="font-size:0.82rem;" onclick="app.quickLoadBranchCurriculum()">
+                📚 Load Branch Subjects
+              </button>
+              <button class="btn btn-primary" onclick="app.openModal('modalAddClass')">
+                + Add Class
+              </button>
+            </div>
+          </div>
+
+          <!-- Class Cards Grid -->
+          <div class="timetable-grid-container" id="timetableGrid">
+            <!-- Populated via JS -->
+          </div>
+        </section>
+
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 3: ATTENDANCE & 75% CALCULATOR                                   -->
+        <!-- ===================================================================== -->
+        <section class="view-section" id="view-attendance">
+          
+          <div class="attendance-hero-grid">
+            <!-- Overall Metric & Ring Chart -->
+            <div class="overall-attendance-card">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div>
+                  <h3 class="card-title">Overall Attendance Summary</h3>
+                  <span class="card-subtitle">Mandatory University Criteria: 75%</span>
+                </div>
+              </div>
+
+              <div class="attendance-metric-circle">
+                <div class="circular-gauge">
+                  <svg viewBox="0 0 100 100">
+                    <circle class="circular-gauge-bg" cx="50" cy="50" r="45" />
+                    <circle class="circular-gauge-fill" id="attGaugeCircle" cx="50" cy="50" r="45" />
+                  </svg>
+                  <div class="gauge-center-text">
+                    <span class="gauge-percentage" id="attOverallPercentText">81.0%</span>
+                    <span class="gauge-label">Overall</span>
+                  </div>
+                </div>
+
+                <div style="flex: 1;">
+                  <div class="attendance-stats-summary">
+                    <div class="stat-pill-box">
+                      <div class="num" id="attTotalClassesStat">158</div>
+                      <div class="txt">Total Conducted</div>
+                    </div>
+                    <div class="stat-pill-box">
+                      <div class="num" style="color:var(--success);" id="attTotalAttendedStat">128</div>
+                      <div class="txt">Attended</div>
+                    </div>
+                    <div class="stat-pill-box">
+                      <div class="num" style="color:var(--danger);" id="attTotalMissedStat">30</div>
+                      <div class="txt">Missed</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="font-size:0.78rem; color:var(--text-muted);">
+                💡 Tip: Click <strong>+ Present</strong> or <strong>- Absent</strong> on any subject card to update your tally in real-time.
+              </div>
+            </div>
+
+            <!-- Smart 75% Prediction Box -->
+            <div class="calculator-card">
+              <div class="card-title-group">
+                <div class="card-icon" style="background:var(--warning-bg); color:var(--warning);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div>
+                  <h3 class="card-title">75% Requirement Calculator</h3>
+                  <span class="card-subtitle">Live cutoff projection & safe bunk advisor</span>
+                </div>
+              </div>
+
+              <div id="att75PredictionBox">
+                <!-- Populated via JS with safe bunk or required classes calculations -->
+              </div>
+
+              <div style="background:var(--bg-card-subtle); padding:0.85rem; border-radius:var(--radius-md); font-size:0.8rem; color:var(--text-muted);">
+                <strong>Formula:</strong> $\text{Percentage} = (\text{Attended} / \text{Total}) \times 100$. Required consecutive classes to hit 75%: $\lceil 3 \cdot \text{Total} - 4 \cdot \text{Attended} \rceil$.
+              </div>
+            </div>
+          </div>
+
+          <!-- Subject-wise Attendance Grid -->
+          <div style="display:flex; justify-content:space-between; align-items:center; margin: 1.5rem 0 1rem; flex-wrap:wrap; gap:0.75rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 800;">Subject-wise Attendance Breakdown</h3>
+            <div style="display:flex; gap:0.5rem;">
+              <button class="btn btn-secondary" onclick="app.quickLoadBranchCurriculum()">
+                📚 Load Branch Subjects
+              </button>
+              <button class="btn btn-primary" onclick="app.openModal('modalAddSubject')">
+                + Add Subject
+              </button>
+            </div>
+          </div>
+
+          <div class="attendance-grid" id="subjectAttendanceGrid">
+            <!-- Populated via JS -->
+          </div>
+        </section>
+
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 4: ASSIGNMENTS & TASKS                                           -->
+        <!-- ===================================================================== -->
+        <section class="view-section" id="view-assignments">
+          <div class="filter-bar">
+            <!-- Filter by status -->
+            <div class="filter-group">
+              <button class="filter-chip-btn asg-status-filter-btn active" data-status="All" onclick="app.filterAssignmentsStatus('All')">All Tasks</button>
+              <button class="filter-chip-btn asg-status-filter-btn" data-status="Pending" onclick="app.filterAssignmentsStatus('Pending')">Pending</button>
+              <button class="filter-chip-btn asg-status-filter-btn" data-status="In Progress" onclick="app.filterAssignmentsStatus('In Progress')">In Progress</button>
+              <button class="filter-chip-btn asg-status-filter-btn" data-status="Submitted" onclick="app.filterAssignmentsStatus('Submitted')">Submitted</button>
+            </div>
+
+            <button class="btn btn-primary" onclick="app.openModal('modalAddAssignment')">
+              + New Assignment
+            </button>
+          </div>
+
+          <!-- Assignments Grid -->
+          <div class="assignments-list-grid" id="assignmentsGrid">
+            <!-- Populated via JS -->
+          </div>
+        </section>
+
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 5: EXAMS & LIVE TIMETABLE                                        -->
+        <!-- ===================================================================== -->
+        <section class="view-section" id="view-exams">
+          <!-- Next Exam Hero Banner with Live Ticking Countdown -->
+          <div class="next-exam-hero-banner" id="nextExamHeroBanner">
+            <!-- Populated via JS -->
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 800;">Mid-Term Examination Schedule</h3>
+            <button class="btn btn-primary" onclick="app.openModal('modalAddExam')">+ Add Exam Entry</button>
+          </div>
+
+          <!-- Exams Matrix -->
+          <div class="exams-matrix-grid" id="examsMatrixGrid">
+            <!-- Populated via JS -->
+          </div>
+        </section>
+
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 6: STUDY NOTES (ORGANIZED BY SUBJECT)                            -->
+        <!-- ===================================================================== -->
+        <section class="view-section" id="view-notes">
+          <div class="notes-workspace-header">
+            <div class="notes-subject-tabs">
+              <button class="note-tab-btn active" data-sub="All" onclick="app.filterNotesSubject('All')">All Subjects</button>
+              <button class="note-tab-btn" data-sub="C++" onclick="app.filterNotesSubject('C++')">C++</button>
+              <button class="note-tab-btn" data-sub="Maths" onclick="app.filterNotesSubject('Maths')">Maths</button>
+              <button class="note-tab-btn" data-sub="Physics" onclick="app.filterNotesSubject('Physics')">Physics</button>
+              <button class="note-tab-btn" data-sub="Electronics" onclick="app.filterNotesSubject('Electronics')">Electronics</button>
+              <button class="note-tab-btn" data-sub="Other" onclick="app.filterNotesSubject('Other')">Other</button>
+            </div>
+
+            <button class="btn btn-primary" onclick="app.openModal('modalAddNote')">
+              + Add Note
+            </button>
+          </div>
+
+          <!-- Notes Grid -->
+          <div class="notes-masonry-grid" id="notesMasonryGrid">
+            <!-- Populated via JS -->
+          </div>
+        </section>
+
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 7: COLLEGE EVENTS & NOTICES                                      -->
+        <!-- ===================================================================== -->
+        <section class="view-section" id="view-events">
+          <div class="events-category-tabs">
+            <button class="note-tab-btn event-cat-btn active" data-cat="All" onclick="app.filterEventsCategory('All')">All Events</button>
+            <button class="note-tab-btn event-cat-btn" data-cat="Workshops" onclick="app.filterEventsCategory('Workshops')">Workshops</button>
+            <button class="note-tab-btn event-cat-btn" data-cat="Seminars" onclick="app.filterEventsCategory('Seminars')">Seminars</button>
+            <button class="note-tab-btn event-cat-btn" data-cat="Hackathons" onclick="app.filterEventsCategory('Hackathons')">Hackathons</button>
+            <button class="note-tab-btn event-cat-btn" data-cat="Club events" onclick="app.filterEventsCategory('Club events')">Club Events</button>
+            <button class="note-tab-btn event-cat-btn" data-cat="Cultural events" onclick="app.filterEventsCategory('Cultural events')">Cultural</button>
+          </div>
+
+          <div class="events-grid-layout" id="eventsGridLayout" style="margin-bottom: 2.5rem;">
+            <!-- Populated via JS -->
+          </div>
+
+          <!-- Official Notices Board -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon" style="background:var(--danger-bg); color:var(--danger);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div>
+                  <h3 class="card-title">Official College Notices & Circulars</h3>
+                  <span class="card-subtitle">Important bulletins from Administration & Exam Cell</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="notice-list-container" id="officialNoticesList">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 8: EXPENSES & BUDGET (HOSTEL / PG)                               -->
+        <!-- ===================================================================== -->
+        <section class="view-section" id="view-expenses">
+          <div class="expense-overview-banner">
+            <!-- Monthly Metrics -->
+            <div class="expense-metrics-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+                <div class="card-title-group">
+                  <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                  </div>
+                  <div>
+                    <h3 class="card-title">Monthly Student Budget</h3>
+                    <span class="card-subtitle">Hostel, PG, Food & Utilities Tracker</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary" style="font-size:0.82rem; padding:0.4rem 0.85rem;" onclick="app.openSetBudgetModal()">
+                  ✏️ Set Budget Limit
+                </button>
+              </div>
+
+              <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:1rem; margin:1.25rem 0;">
+                <div>
+                  <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Budget Limit</div>
+                  <div style="font-size:1.6rem; font-weight:800; font-family:var(--font-heading);" id="expMonthlyBudget">₹10,000</div>
+                </div>
+                <div>
+                  <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Total Spent</div>
+                  <div style="font-size:1.6rem; font-weight:800; font-family:var(--font-heading); color:var(--danger);" id="expTotalSpent">₹0</div>
+                </div>
+                <div>
+                  <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Remaining</div>
+                  <div style="font-size:1.6rem; font-weight:800; font-family:var(--font-heading); color:var(--success);" id="expBalanceLeft">₹10,000</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill" id="expBudgetProgressBar" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Spending Breakdown -->
+            <div class="category-breakdown-card">
+              <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem;">Spending by Category</h3>
+              <div id="expCategoryBreakdown">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Transactions List -->
+          <div style="display:flex; justify-content:space-between; align-items:center; margin: 1.5rem 0 1rem; flex-wrap:wrap; gap:0.75rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 800;">Recent Expenses & Dues</h3>
+            <div style="display:flex; gap:0.5rem;">
+              <button class="btn btn-secondary" onclick="app.openSetBudgetModal()">💰 Set Budget Limit</button>
+              <button class="btn btn-primary" onclick="app.openModal('modalAddExpense')">+ Add Expense</button>
+            </div>
+          </div>
+
+          <div class="expense-table-container">
+            <table class="expense-table">
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Date</th>
+                  <th>Payment Mode</th>
+                  <th>Amount</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="expTransactionsTableBody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 9: TRAVEL & TRANSIT (TRAINS, FLIGHTS, BUS, CARS)                  -->
+        <!-- ===================================================================== -->
+        <section class="view-section" id="view-travel">
+          <!-- Travel Metric Summary -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1.25rem; margin-bottom:1.5rem;">
+            <div class="card" style="display:flex; align-items:center; gap:1.25rem;">
+              <div class="card-icon" style="background:rgba(79, 70, 229, 0.12); color:var(--primary-600); width:50px; height:50px; font-size:1.4rem;">
+                🚆
+              </div>
+              <div>
+                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">Next Upcoming Trip</div>
+                <div style="font-size:1.1rem; font-weight:800; color:var(--text-heading);" id="travelMetricNextTrip">None Planned</div>
+                <div style="font-size:0.75rem; color:var(--primary-600); font-weight:700;" id="travelMetricCountdown">0 days left</div>
+              </div>
+            </div>
+
+            <div class="card" style="display:flex; align-items:center; gap:1.25rem;">
+              <div class="card-icon" style="background:var(--success-bg); color:var(--success); width:50px; height:50px; font-size:1.4rem;">
+                🎫
+              </div>
+              <div>
+                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">Active Bookings</div>
+                <div style="font-size:1.4rem; font-weight:800; color:var(--text-heading);" id="travelMetricActiveCount">0</div>
+                <div style="font-size:0.75rem; color:var(--success); font-weight:700;" id="travelMetricConfirmedCount">0 Confirmed</div>
+              </div>
+            </div>
+
+            <div class="card" style="display:flex; align-items:center; gap:1.25rem;">
+              <div class="card-icon" style="background:var(--info-bg); color:var(--info); width:50px; height:50px; font-size:1.4rem;">
+                💰
+              </div>
+              <div>
+                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">Total Travel Fares</div>
+                <div style="font-size:1.4rem; font-weight:800; color:var(--text-heading);" id="travelMetricTotalFare">₹0</div>
+                <div style="font-size:0.75rem; color:var(--text-muted);">Semester travel expenditure</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls & Filters -->
+          <div class="filter-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.25rem;">
+            <div class="filter-group" style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+              <button class="filter-chip-btn travel-filter-btn active" data-mode="All" onclick="app.filterTravelMode('All')">All Modes</button>
+              <button class="filter-chip-btn travel-filter-btn" data-mode="Train" onclick="app.filterTravelMode('Train')">🚆 Trains</button>
+              <button class="filter-chip-btn travel-filter-btn" data-mode="Flight" onclick="app.filterTravelMode('Flight')">✈️ Flights</button>
+              <button class="filter-chip-btn travel-filter-btn" data-mode="Bus" onclick="app.filterTravelMode('Bus')">🚌 Buses</button>
+              <button class="filter-chip-btn travel-filter-btn" data-mode="Car" onclick="app.filterTravelMode('Car')">🚗 Cars / Cabs</button>
+              <button class="filter-chip-btn travel-filter-btn" data-mode="Metro" onclick="app.filterTravelMode('Metro')">🚇 Metro / Other</button>
+            </div>
+
+            <button class="btn btn-primary" onclick="app.openModal('modalAddTravel')">
+              + Add Journey / Ticket
+            </button>
+          </div>
+
+          <!-- Travel Cards Grid -->
+          <div id="travelCardsGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:1.25rem;">
+            <!-- Populated dynamically via JS -->
+          </div>
+        </section>
+
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 10: STUDENT PROFILE & ACADEMICS                                  -->
+        <!-- ===================================================================== -->
+        <section class="view-section" id="view-profile">
+          <div class="profile-main-grid">
+            <!-- Sidebar ID Card -->
+            <div class="profile-card-sidebar">
+              <div class="profile-avatar-container" onclick="app.openModal('modalChangePhoto')" title="Click to Change Student Photo">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80" alt="Avatar" class="profile-large-avatar" id="profAvatarLarge" />
+                <div class="avatar-edit-badge">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                </div>
+              </div>
+              <h2 class="profile-name-text" id="profName">Student Name</h2>
+              <span class="profile-prn-pill" id="profRollNo">Roll No • PRN</span>
+              
+              <div style="width: 100%; border-top: 1px solid var(--border-light); padding-top: 1rem; margin-top: 0.5rem; text-align: left; font-size: 0.84rem; display: flex; flex-direction: column; gap: 0.6rem;">
+                <div>🎓 <span id="profCourse">Course & Branch</span></div>
+                <div>🏛️ <span id="profCollege">College Name</span></div>
+                <div>📅 <span id="profSemester">Semester 1 (2025-2026)</span></div>
+                <div>🏢 Hostel: <span id="profHostel">Not Specified</span></div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:0.5rem; width:100%; margin-top:1.25rem;">
+                <button class="btn btn-primary" style="width:100%; font-size:0.85rem;" onclick="app.openChangeSemYearModal()">
+                  🎓 + Change Semester & Year (e.g. 26-27)
+                </button>
+                <button class="btn btn-secondary" style="width:100%; font-size:0.85rem;" onclick="app.openModal('modalChangePhoto')">
+                  📷 Change Profile Photo
+                </button>
+                <button class="btn btn-secondary" style="width:100%; font-size:0.85rem; color:var(--primary-600); font-weight:700;" onclick="app.openModal('modalSetSecurityPin')">
+                  🔒 4-Digit Security PIN & Vault
+                </button>
+                <button class="btn btn-secondary" style="width:100%; font-size:0.85rem;" onclick="app.openEditProfileModal()">
+                  ✏️ Edit Student Info
+                </button>
+              </div>
+            </div>
+
+            <!-- Academic Progression & Contacts -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+              <!-- CGPA Breakdown -->
+              <div class="card">
+                <div class="card-header" style="flex-wrap:wrap; gap:1rem;">
+                  <div class="card-title-group">
+                    <div class="card-icon">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                    </div>
+                    <div>
+                      <h3 class="card-title">Academic CGPA & Semester SPI</h3>
+                      <span class="card-subtitle">Official university grade progression & calculator</span>
+                    </div>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:1.25rem;">
+                    <div style="text-align:right;">
+                      <div style="font-size:1.75rem; font-weight:800; color:var(--primary-600); font-family:var(--font-heading);" id="profCGPA">0.00</div>
+                      <div style="font-size:0.75rem; color:var(--text-muted);">Cumulative CGPA</div>
+                    </div>
+                    <button class="btn btn-primary" onclick="app.openModal('modalAddSpi')">
+                      + Add Semester SPI
+                    </button>
+                  </div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.84rem; color:var(--text-muted); margin-bottom:1rem; padding-bottom:0.75rem; border-bottom:1px solid var(--border-light); flex-wrap:wrap; gap:0.5rem;">
+                  <div>Total Credits Earned: <strong id="profCredits" style="color:var(--text-heading);">0 / 160</strong></div>
+                  <div id="profEquivalentPercent">Approx Percentage: <strong>0.0%</strong></div>
+                </div>
+
+                <div id="profSemHistoryGrid">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+
+              <!-- Emergency Campus Contacts -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <div class="card-icon" style="background:var(--warning-bg); color:var(--warning);">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    </div>
+                    <div>
+                      <h3 class="card-title">Emergency & Campus Contacts</h3>
+                      <span class="card-subtitle">Hostel warden, medical desk & guardian</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="profEmergencyList">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- ========================================================================= -->
+    <!-- MOBILE BOTTOM NAVIGATION                                                  -->
+    <!-- ========================================================================= -->
+    <nav class="mobile-bottom-nav">
+      <div class="bottom-nav-items">
+        <button class="bottom-nav-btn active" data-nav-target="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+          <span>Home</span>
+        </button>
+        <button class="bottom-nav-btn" data-nav-target="timetable">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Schedule</span>
+        </button>
+        <button class="bottom-nav-btn" data-nav-target="assignments">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span>Tasks</span>
+        </button>
+        <button class="bottom-nav-btn" data-nav-target="attendance">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span>Attendance</span>
+        </button>
+        <button class="bottom-nav-btn" data-nav-target="profile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Profile</span>
+        </button>
+      </div>
+    </nav>
+
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- MODALS CONTAINER                                                          -->
+  <!-- ========================================================================= -->
+
+  <!-- Modal: Add Assignment -->
+  <div class="modal-backdrop" id="modalAddAssignment">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem; font-weight: 800;">Add New Assignment</h3>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalAddAssignment')">✕</button>
+      </div>
+      <form id="addAssignmentForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Assignment Title</label>
+            <input type="text" class="form-control" id="asgInputTitle" placeholder="e.g. Graph Algorithms & Shortest Path" required />
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Subject</label>
+              <select class="form-control" id="asgInputSubject">
+                <option value="C++">C++</option>
+                <option value="Maths">Maths</option>
+                <option value="Physics">Physics</option>
+                <option value="Electronics">Electronics</option>
+                <option value="DBMS">DBMS</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Priority</label>
+              <select class="form-control" id="asgInputPriority">
+                <option value="High">High</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Deadline</label>
+              <input type="datetime-local" class="form-control" id="asgInputDeadline" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Points</label>
+              <input type="number" class="form-control" id="asgInputPoints" value="20" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Instructions / Description</label>
+            <textarea class="form-control" id="asgInputDesc" rows="3" placeholder="Submission requirements, guidelines, links..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalAddAssignment')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Expense -->
+  <div class="modal-backdrop" id="modalAddExpense">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem; font-weight: 800;">Log Expense</h3>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalAddExpense')">✕</button>
+      </div>
+      <form id="addExpenseForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Expense Title / Item</label>
+            <input type="text" class="form-control" id="expInputTitle" placeholder="e.g. Hostel Mess Canteen / Books" required />
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select class="form-control" id="expInputCategory">
+                <option value="Food">Food</option>
+                <option value="Transport">Transport</option>
+                <option value="Hostel">Hostel</option>
+                <option value="Study materials">Study materials</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Amount (₹)</label>
+              <input type="number" step="0.01" class="form-control" id="expInputAmount" placeholder="e.g. 250" required />
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Payment Mode</label>
+              <select class="form-control" id="expInputMode">
+                <option value="UPI">UPI / GPay / PhonePe</option>
+                <option value="Cash">Cash</option>
+                <option value="Card">Debit / Credit Card</option>
+                <option value="Net Banking">Net Banking</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date</label>
+              <input type="date" class="form-control" id="expInputDate" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalAddExpense')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Log Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Set Monthly Student Budget -->
+  <div class="modal-backdrop" id="modalSetBudget">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem; font-weight: 800;">Set Monthly Budget</h3>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalSetBudget')">✕</button>
+      </div>
+      <form id="setBudgetForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Monthly Allowance / Budget Limit (₹)</label>
+            <input type="number" step="100" min="100" max="500000" class="form-control" id="budgetInputAmount" placeholder="e.g. 10000" required />
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.5rem;">
+            <button type="button" class="btn btn-secondary" style="font-size:0.75rem; padding:0.25rem 0.6rem;" onclick="document.getElementById('budgetInputAmount').value = 5000">₹5,000</button>
+            <button type="button" class="btn btn-secondary" style="font-size:0.75rem; padding:0.25rem 0.6rem;" onclick="document.getElementById('budgetInputAmount').value = 8000">₹8,000</button>
+            <button type="button" class="btn btn-secondary" style="font-size:0.75rem; padding:0.25rem 0.6rem;" onclick="document.getElementById('budgetInputAmount').value = 10000">₹10,000</button>
+            <button type="button" class="btn btn-secondary" style="font-size:0.75rem; padding:0.25rem 0.6rem;" onclick="document.getElementById('budgetInputAmount').value = 15000">₹15,000</button>
+            <button type="button" class="btn btn-secondary" style="font-size:0.75rem; padding:0.25rem 0.6rem;" onclick="document.getElementById('budgetInputAmount').value = 20000">₹20,000</button>
+          </div>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.85rem;">
+            💡 Useful for hostel, PG, food mess, and daily college expenses. Your remaining balance and spending progress bar will adjust automatically.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalSetBudget')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Budget</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Student Profile Photo Options -->
+  <div class="modal-backdrop" id="modalChangePhoto">
+    <div class="modal-box" style="max-width: 620px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.65rem;">
+          <div style="font-size:1.4rem;">📷</div>
+          <div>
+            <h3 style="font-size: 1.2rem; font-weight: 800;">Choose Student Profile Photo</h3>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Upload your own photo or pick an illustrated avatar</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalChangePhoto')">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 1.5rem;">
+        
+        <!-- Active Photo Preview -->
+        <div style="text-align:center; margin-bottom: 1.25rem;">
+          <img src="" alt="Preview" class="avatar-preview-box" id="avatarModalPreview" />
+          <div style="font-size: 0.76rem; color: var(--text-muted);">Current Selected Photo</div>
+        </div>
+
+        <!-- Option 1: File Upload from Computer/Mobile -->
+        <div style="margin-bottom: 1.5rem;">
+          <div style="font-size:0.86rem; font-weight:700; margin-bottom:0.45rem;">Option 1: Upload from Computer or Phone</div>
+          <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" onchange="app.handleAvatarFileUpload(event)" />
+          <div class="avatar-upload-dropzone" onclick="document.getElementById('avatarFileInput').click()">
+            <div style="font-size: 1.6rem; margin-bottom: 0.25rem;">📂</div>
+            <div style="font-weight: 700; font-size: 0.88rem; color: var(--primary-600);">Click here to select photo from device</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">Supports JPG, PNG, GIF, WebP (Instant local preview & save)</div>
+          </div>
+        </div>
+
+        <!-- Option 2: Pre-designed Avatars Gallery -->
+        <div style="margin-bottom: 1.5rem;">
+          <div style="font-size:0.86rem; font-weight:700; margin-bottom:0.25rem;">Option 2: Select an Illustrated Student Avatar</div>
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.5rem;">Click any avatar to apply immediately</div>
+          <div class="avatar-gallery-grid" id="avatarGalleryContainer">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Option 3: Web Image URL -->
+        <div>
+          <div style="font-size:0.86rem; font-weight:700; margin-bottom:0.45rem;">Option 3: Paste Web Image URL</div>
+          <div style="display:flex; gap:0.5rem;">
+            <input type="url" class="form-control" id="avatarInputUrl" placeholder="https://example.com/my-photo.jpg" />
+            <button type="button" class="btn btn-primary" onclick="app.applyAvatarFromUrl()" style="white-space:nowrap;">Apply URL</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer" style="justify-content: space-between;">
+        <button type="button" class="btn btn-secondary" style="color: var(--danger);" onclick="app.resetAvatarToDefault()">Reset to Default</button>
+        <button type="button" class="btn btn-primary" onclick="app.closeModal('modalChangePhoto')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Travel Journey (Train, Flight, Bus, Car, Metro) -->
+  <div class="modal-backdrop" id="modalAddTravel">
+    <div class="modal-box" style="max-width: 620px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.65rem;">
+          <div style="font-size:1.4rem;">✈️</div>
+          <div>
+            <h3 style="font-size: 1.2rem; font-weight: 800;">Add Journey / Ticket</h3>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Record train, flight, bus, car, or transit details</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalAddTravel')">✕</button>
+      </div>
+      <form id="addTravelForm">
+        <div class="modal-body" style="padding:1.5rem; overflow-y:auto; max-height:calc(85vh - 140px);">
+          
+          <div class="form-group">
+            <label class="form-label">Mode of Travel <span style="color:var(--danger);">*</span></label>
+            <select class="form-control" id="travelInputMode" onchange="app.onTravelModeChange()" required>
+              <option value="Train">🚆 Train / Indian Railways</option>
+              <option value="Flight">✈️ Flight / Airline</option>
+              <option value="Bus">🚌 Bus / Sleeper Coach</option>
+              <option value="Car">🚗 Car / Cab / Outstation / Shared Ride</option>
+              <option value="Metro">🚇 Metro / Local Transit</option>
+              <option value="Other">➕ Other Transit</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Trip Title / Purpose <span style="color:var(--danger);">*</span></label>
+            <input type="text" class="form-control" id="travelInputTitle" placeholder="e.g. Diwali Vacation Home Journey / Hackathon Trip" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" id="travelCarrierLabel">Train / Flight / Operator Name & Number</label>
+            <input type="text" class="form-control" id="travelInputCarrier" placeholder="e.g. 12952 Mumbai Rajdhani / IndiGo 6E-204 / Zingbus" required />
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label" id="travelOriginLabel">Boarding From (Station / Airport / City)</label>
+              <input type="text" class="form-control" id="travelInputOrigin" placeholder="e.g. New Delhi (NDLS) / DEL T3" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" id="travelDestLabel">Destination (Station / Airport / City)</label>
+              <input type="text" class="form-control" id="travelInputDest" placeholder="e.g. Mumbai Central (MMCT) / BLR" required />
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Departure Date <span style="color:var(--danger);">*</span></label>
+              <input type="date" class="form-control" id="travelInputDepDate" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Departure Time <span style="color:var(--danger);">*</span></label>
+              <input type="time" class="form-control" id="travelInputDepTime" value="10:00" required />
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Arrival Date (Optional)</label>
+              <input type="date" class="form-control" id="travelInputArrDate" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Arrival Time (Optional)</label>
+              <input type="time" class="form-control" id="travelInputArrTime" value="18:00" />
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label" id="travelPnrLabel">PNR / Booking Ref / Seat Details</label>
+              <input type="text" class="form-control" id="travelInputPnr" placeholder="e.g. PNR: 2458910291 • Coach B4-42 (SL)" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ticket Fare (₹)</label>
+              <input type="number" step="0.01" class="form-control" id="travelInputFare" placeholder="e.g. 1850" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Booking Status</label>
+            <select class="form-control" id="travelInputStatus">
+              <option value="Confirmed">✓ Confirmed Ticket</option>
+              <option value="RAC / Waiting List">⏳ RAC / Waiting List</option>
+              <option value="Booked">🎫 Booked / In Progress</option>
+              <option value="Completed">🏁 Completed</option>
+              <option value="Cancelled">❌ Cancelled</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Packing Checklist & Journey Notes</label>
+            <textarea class="form-control" id="travelInputNotes" rows="2" placeholder="e.g. College ID Card, Aadhaar Card, Charger, Laptop, Hostel Leave Slip"></textarea>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalAddTravel')">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="font-weight:700; padding:0.6rem 1.25rem;">✓ OK, Save Journey</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Change Semester & Academic Year -->
+  <div class="modal-backdrop" id="modalChangeSemYear">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.65rem;">
+          <div style="font-size:1.4rem;">🎓</div>
+          <div>
+            <h3 style="font-size: 1.2rem; font-weight: 800;">Academic Semester & Year</h3>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Set your active semester & session (e.g. 26-27)</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalChangeSemYear')">✕</button>
+      </div>
+      <form id="changeSemYearForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Current Active Semester <span style="color:var(--danger);">*</span></label>
+            <select class="form-control" id="semYearInputSemester" required>
+              <option value="1">Semester 1 (1st Year)</option>
+              <option value="2">Semester 2 (1st Year)</option>
+              <option value="3">Semester 3 (2nd Year)</option>
+              <option value="4">Semester 4 (2nd Year)</option>
+              <option value="5">Semester 5 (3rd Year)</option>
+              <option value="6">Semester 6 (3rd Year)</option>
+              <option value="7">Semester 7 (4th Year / Final)</option>
+              <option value="8">Semester 8 (4th Year / Final)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Academic Year / Session Type <span style="color:var(--danger);">*</span></label>
+            <input type="text" class="form-control" id="semYearInputYear" placeholder="e.g. 2026-2027 or 26-27" required />
+            <div style="margin-top:0.45rem;">
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.25rem;">Quick Select Year Presets:</div>
+              <div style="display:flex; flex-wrap:wrap; gap:0.35rem;">
+                <button type="button" class="filter-chip-btn" onclick="document.getElementById('semYearInputYear').value='2024-2025'">2024-2025</button>
+                <button type="button" class="filter-chip-btn" onclick="document.getElementById('semYearInputYear').value='2025-2026'">2025-2026</button>
+                <button type="button" class="filter-chip-btn" onclick="document.getElementById('semYearInputYear').value='2026-2027'">2026-2027</button>
+                <button type="button" class="filter-chip-btn" onclick="document.getElementById('semYearInputYear').value='2027-2028'">2027-2028</button>
+                <button type="button" class="filter-chip-btn" onclick="document.getElementById('semYearInputYear').value='26-27'">26-27</button>
+                <button type="button" class="filter-chip-btn" onclick="document.getElementById('semYearInputYear').value='2026-27'">2026-27</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Degree Total Target Credits (Optional)</label>
+            <input type="number" min="50" max="300" class="form-control" id="semYearInputTotalCredits" placeholder="e.g. 160" value="160" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalChangeSemYear')">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="font-weight:700; padding:0.6rem 1.25rem;">✓ OK, Save Semester & Year</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Note -->
+  <div class="modal-backdrop" id="modalAddNote">
+    <div class="modal-box" style="max-width: 600px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+          <span style="font-size:1.3rem;">📝</span>
+          <h3 style="font-size: 1.2rem; font-weight: 800;">Create Study Note & Attach PDF</h3>
+        </div>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalAddNote')">✕</button>
+      </div>
+      <form id="addNoteForm">
+        <div class="modal-body" style="padding:1.5rem; overflow-y:auto; max-height:calc(85vh - 140px);">
+          <div class="form-group">
+            <label class="form-label">Note Title <span style="color:var(--danger);">*</span></label>
+            <input type="text" class="form-control" id="noteInputTitle" placeholder="e.g. Unit 3 Computer Networks Notes" required />
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Subject Category</label>
+              <select class="form-control" id="noteInputSubject">
+                <option value="C++">C++</option>
+                <option value="Maths">Maths</option>
+                <option value="Physics">Physics</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tags (comma separated)</label>
+              <input type="text" class="form-control" id="noteInputTags" placeholder="Algorithms, Graph, Exam" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Note Content / Key Summary</label>
+            <textarea class="form-control" id="noteInputContent" rows="4" placeholder="Formulas, key bullet points, lecture summary..."></textarea>
+          </div>
+
+          <!-- Attach PDF Section -->
+          <div class="form-group" style="margin-top: 1rem; border-top:1px solid var(--border-light); padding-top:1rem;">
+            <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:700;">📄 Attach Study Material / Lecture PDF</span>
+              <span style="font-size:0.74rem; color:var(--primary-600); font-weight:600;">Optional</span>
+            </label>
+            <input type="file" id="noteInputPdfFile" accept="application/pdf,.pdf" style="display:none;" onchange="app.handleNotePdfFileSelect(event)" />
+            
+            <div class="avatar-upload-dropzone" style="padding:1rem; cursor:pointer;" onclick="document.getElementById('noteInputPdfFile').click()">
+              <div style="font-size:1.6rem; margin-bottom:0.25rem;">📑</div>
+              <div style="font-size:0.86rem; font-weight:700; color:var(--primary-600);">Click to Browse & Attach PDF Document</div>
+              <div style="font-size:0.74rem; color:var(--text-muted); margin-top:0.2rem;">Supports lecture PDFs, cheatsheets, past papers & question banks</div>
+            </div>
+
+            <!-- PDF Preview Chip -->
+            <div id="notePdfPreviewBox" style="display:none; align-items:center; justify-content:space-between; padding:0.65rem 0.85rem; background:rgba(79,70,229,0.08); border-radius:var(--radius-md); border:1px solid rgba(79,70,229,0.25); margin-top:0.65rem;">
+              <div style="display:flex; align-items:center; gap:0.6rem; overflow:hidden;">
+                <span style="font-size:1.4rem;">📄</span>
+                <div style="overflow:hidden;">
+                  <div id="notePdfFileName" style="font-size:0.85rem; font-weight:700; color:var(--primary-700); text-overflow:ellipsis; white-space:nowrap; overflow:hidden;">document.pdf</div>
+                  <div id="notePdfFileSize" style="font-size:0.72rem; color:var(--text-muted);">0 KB</div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-secondary" style="padding:0.25rem 0.55rem; font-size:0.75rem; color:var(--danger);" onclick="app.removeAttachedNotePdf()">✕ Remove</button>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:0.5rem; margin-top:0.75rem;">
+            <input type="checkbox" id="noteInputPinned" />
+            <label for="noteInputPinned" style="font-size:0.84rem; cursor:pointer;">📌 Pin this note to top of board</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalAddNote')">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="font-weight:700;">✓ OK, Save Note</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Interactive PDF Viewer & Access -->
+  <div class="modal-backdrop" id="modalPdfViewer" style="z-index: 10000; backdrop-filter: blur(8px);">
+    <div class="modal-box" style="max-width: 960px; width: 95%; max-height: 94vh;">
+      <div class="modal-header" style="background: var(--bg-card-subtle); padding:1rem 1.25rem;">
+        <div style="display:flex; align-items:center; gap:0.75rem; overflow:hidden;">
+          <div style="font-size:1.5rem;">📄</div>
+          <div style="overflow:hidden;">
+            <h3 id="pdfViewerTitle" style="font-size: 1.15rem; font-weight: 800; text-overflow:ellipsis; white-space:nowrap; overflow:hidden;">Study Notes PDF Viewer</h3>
+            <span id="pdfViewerSubtitle" style="font-size:0.75rem; color:var(--text-muted);">Interactive College Notes & Document Preview</span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <a id="pdfViewerDownloadBtn" href="#" download="study_notes.pdf" class="btn btn-primary" style="padding:0.4rem 0.85rem; font-size:0.8rem; font-weight:700;">
+            ⬇️ Download PDF
+          </a>
+          <a id="pdfViewerOpenNewTabBtn" href="#" target="_blank" class="btn btn-secondary" style="padding:0.4rem 0.75rem; font-size:0.8rem;" title="Open in New Browser Tab">
+            ↗️ Fullscreen Tab
+          </a>
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalPdfViewer')">✕</button>
+        </div>
+      </div>
+      <div class="modal-body" style="padding: 0.5rem; height: 76vh; display:flex; flex-direction:column; background:var(--bg-base);">
+        <iframe id="pdfViewerIframe" src="" style="width:100%; height:100%; border:1px solid var(--border-color); border-radius:var(--radius-md); background:white;"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Profile -->
+  <div class="modal-backdrop" id="modalEditProfile">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem; font-weight: 800;">Edit Student Profile</h3>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalEditProfile')">✕</button>
+      </div>
+      <form id="editProfileForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="profInputName" required />
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Roll Number</label>
+              <input type="text" class="form-control" id="profInputRoll" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">PRN / Student ID</label>
+              <input type="text" class="form-control" id="profInputPRN" required />
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Gmail / Email Address</label>
+              <input type="email" class="form-control" id="profInputEmail" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-control" id="profInputPhone" required />
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Stream / Degree</label>
+              <select class="form-control" id="profInputStream" onchange="app.onStreamSelectChange('profInputStream', 'profInputBranch')">
+                <option value="Engineering & Technology (B.Tech / BE)">Engineering & Technology (B.Tech / BE)</option>
+                <option value="Science & IT (B.Sc / BCA)">Science & IT (B.Sc / BCA)</option>
+                <option value="Commerce & Management (B.Com / BBA)">Commerce & Management (B.Com / BBA)</option>
+                <option value="Arts & Humanities (BA)">Arts & Humanities (BA)</option>
+                <option value="Medical & Health Sciences (MBBS / BAMS / Nursing)">Medical & Health Sciences (MBBS / BAMS / Nursing)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Branch / Department</label>
+              <select class="form-control" id="profInputBranch">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">College / Institute Name</label>
+              <input type="text" class="form-control" id="profInputCollege" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Manual Cumulative CGPA Override</label>
+              <input type="number" step="0.01" min="0" max="10" class="form-control" id="profInputCGPA" placeholder="e.g. 8.50" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hostel / Room Details</label>
+            <input type="text" class="form-control" id="profInputHostel" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalEditProfile')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- ========================================================================= -->
+  <!-- MANDATORY STUDENT LOGIN / ONBOARDING MODAL                                -->
+  <!-- ========================================================================= -->
+  <div class="modal-backdrop" id="modalStudentLogin" style="z-index: 9999; backdrop-filter: blur(12px); background: rgba(15, 23, 42, 0.85);">
+    <div class="modal-box" style="max-width: 600px; max-height:90vh; border: 2px solid var(--primary-500); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+      <div class="modal-header" style="background: linear-gradient(135deg, var(--primary-600), #2563EB); color: white;">
+        <div style="display:flex; align-items:center; gap:0.85rem;">
+          <img src="assets/logo.jpg" alt="College Dashboard Logo" style="width:42px; height:42px; border-radius:10px; object-fit:cover; border:1.5px solid rgba(255,255,255,0.4); box-shadow:0 4px 10px rgba(0,0,0,0.2);" />
+          <div>
+            <h3 style="font-size: 1.25rem; font-weight: 800; color:white;">College Dashboard Setup</h3>
+            <span style="font-size: 0.76rem; color: #C7D2FE;">Student Portal Verification & Course Customization</span>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" style="color:white; background:rgba(255,255,255,0.15); border:none; font-size:1rem; padding:0.25rem 0.6rem;" onclick="app.closeModal('modalStudentLogin')" title="Close and explore dashboard">✕</button>
+      </div>
+      <form id="studentLoginForm">
+        <div class="modal-body" style="padding: 1.5rem; overflow-y:auto; max-height:calc(85vh - 140px);">
+          <div style="background: var(--primary-50); border: 1px solid var(--primary-100); border-radius: var(--radius-md); padding: 0.85rem 1rem; font-size: 0.82rem; color: var(--primary-900); margin-bottom: 1.25rem;">
+            🔒 <strong>Verification Notice:</strong> Please provide your valid <strong>Gmail address</strong> and <strong>Phone number</strong> to initialize and personalize your college schedule, timetable & academic records.
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Student Full Name <span style="color:var(--danger);">*</span></label>
+            <input type="text" class="form-control" id="loginInputName" placeholder="e.g. Dev Jain" required />
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Gmail / College Email <span style="color:var(--danger);">*</span></label>
+              <input type="email" class="form-control" id="loginInputEmail" placeholder="student@gmail.com" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number (10 digits) <span style="color:var(--danger);">*</span></label>
+              <input type="tel" pattern="[0-9]{10}" class="form-control" id="loginInputPhone" placeholder="9876543210" required />
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Stream / Degree <span style="color:var(--danger);">*</span></label>
+              <select class="form-control" id="loginInputStream" onchange="app.onStreamSelectChange('loginInputStream', 'loginInputBranch')">
+                <option value="Engineering & Technology (B.Tech / BE)">Engineering & Technology (B.Tech / BE)</option>
+                <option value="Science & IT (B.Sc / BCA)">Science & IT (B.Sc / BCA)</option>
+                <option value="Commerce & Management (B.Com / BBA)">Commerce & Management (B.Com / BBA)</option>
+                <option value="Arts & Humanities (BA)">Arts & Humanities (BA)</option>
+                <option value="Medical & Health Sciences (MBBS / BAMS / Nursing)">Medical & Health Sciences (MBBS / BAMS / Nursing)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Branch / Department <span style="color:var(--danger);">*</span></label>
+              <select class="form-control" id="loginInputBranch">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1.5fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Semester</label>
+              <select class="form-control" id="loginInputSemester">
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">College / Institute Name <span style="color:var(--danger);">*</span></label>
+              <input type="text" class="form-control" id="loginInputCollege" placeholder="e.g. Apex Institute of Technology" required />
+            </div>
+          </div>
+
+          <!-- Optional 4-Digit Security PIN -->
+          <div class="form-group" style="background:var(--bg-card-subtle); padding:0.85rem 1rem; border-radius:var(--radius-md); border:1px solid var(--border-color); margin-top:0.5rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.25rem;">
+              <label class="form-label" style="margin-bottom:0; font-weight:700; color:var(--primary-700);">🔒 Create 4-Digit Security PIN (Private Vault)</label>
+              <span style="font-size:0.72rem; color:var(--primary-600); font-weight:600;">Recommended</span>
+            </div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.6rem;">Protect your CGPA, attendance, travel tickets, and study notes from roommates on shared devices.</div>
+            <input type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" class="form-control" id="loginInputPin" placeholder="••••" style="letter-spacing:6px; font-weight:800; font-size:1.3rem; text-align:center;" />
+          </div>
+        </div>
+        <div class="modal-footer" style="display:flex; flex-direction:column; gap:0.5rem;">
+          <button type="submit" class="btn btn-primary" style="width:100%; padding:0.85rem; font-size:1rem;">
+            🚀 Verify & Access Dashboard
+          </button>
+          <button type="button" class="btn btn-secondary" style="width:100%; font-size:0.82rem; padding:0.45rem;" onclick="app.closeModal('modalStudentLogin')">
+            👁️ Explore Dashboard First (View All Details)
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Class / Lecture to Timetable -->
+  <div class="modal-backdrop" id="modalAddClass">
+    <div class="modal-box" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem; font-weight: 800;">Add Class to Timetable</h3>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalAddClass')">✕</button>
+      </div>
+      <form id="addClassForm">
+        <div class="modal-body">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Select Stream</label>
+              <select class="form-control" id="classInputStream" onchange="app.onStreamSelectChange('classInputStream', 'classInputBranch', 'classSubjectQuickList')">
+                <option value="Engineering & Technology (B.Tech / BE)">Engineering & Technology (B.Tech / BE)</option>
+                <option value="Science & IT (B.Sc / BCA)">Science & IT (B.Sc / BCA)</option>
+                <option value="Commerce & Management (B.Com / BBA)">Commerce & Management (B.Com / BBA)</option>
+                <option value="Arts & Humanities (BA)">Arts & Humanities (BA)</option>
+                <option value="Medical & Health Sciences (MBBS / BAMS / Nursing)">Medical & Health Sciences (MBBS / BAMS / Nursing)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Select Branch</label>
+              <select class="form-control" id="classInputBranch" onchange="app.populateSubjectQuickList('classInputStream', 'classInputBranch', 'classSubjectQuickList')">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Subject Name (Type custom or select from branch list below)</label>
+            <input type="text" class="form-control" id="classInputSubject" placeholder="e.g. Operating Systems / Financial Accounting" required />
+            <div style="margin-top:0.45rem;">
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.25rem; display:flex; justify-content:space-between;">
+                <span>📜 Scroll branch subjects:</span>
+                <span style="font-size:0.7rem; color:var(--primary-600);">Click to select or + Add</span>
+              </div>
+              <div id="classSubjectQuickList" class="subject-quicklist-scroll-box">
+                <!-- Subject pills populated dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Day of Week</label>
+              <select class="form-control" id="classInputDay">
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Class Type</label>
+              <select class="form-control" id="classInputType">
+                <option value="Lecture">Lecture</option>
+                <option value="Lab">Lab</option>
+                <option value="Tutorial">Tutorial</option>
+                <option value="Workshop">Workshop</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Start Time</label>
+              <input type="time" class="form-control" id="classInputStartTime" value="09:00" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">End Time</label>
+              <input type="time" class="form-control" id="classInputEndTime" value="10:00" required />
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Professor / Faculty</label>
+              <input type="text" class="form-control" id="classInputProf" placeholder="e.g. Dr. A. Sharma" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Room / Lab Hall</label>
+              <input type="text" class="form-control" id="classInputRoom" placeholder="e.g. LT-204 / Lab 3" required />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalAddClass')">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="font-weight:700; padding:0.6rem 1.25rem;">✓ OK, Add Class</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add New Subject for Attendance -->
+  <div class="modal-backdrop" id="modalAddSubject">
+    <div class="modal-box" style="max-width: 600px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <div style="font-size:1.3rem;">📚</div>
+          <div>
+            <h3 style="font-size: 1.2rem; font-weight: 800;">Add New Subject</h3>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Pick branch preset or type custom subject</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalAddSubject')">✕</button>
+      </div>
+      <form id="addSubjectForm">
+        <div class="modal-body">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Stream</label>
+              <select class="form-control" id="subInputStream" onchange="app.onStreamSelectChange('subInputStream', 'subInputBranch', 'subSubjectQuickList')">
+                <option value="Engineering & Technology (B.Tech / BE)">Engineering & Technology (B.Tech / BE)</option>
+                <option value="Science & IT (B.Sc / BCA)">Science & IT (B.Sc / BCA)</option>
+                <option value="Commerce & Management (B.Com / BBA)">Commerce & Management (B.Com / BBA)</option>
+                <option value="Arts & Humanities (BA)">Arts & Humanities (BA)</option>
+                <option value="Medical & Health Sciences (MBBS / BAMS / Nursing)">Medical & Health Sciences (MBBS / BAMS / Nursing)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Branch</label>
+              <select class="form-control" id="subInputBranch" onchange="app.populateSubjectQuickList('subInputStream', 'subInputBranch', 'subSubjectQuickList')">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Subject Name (Type custom or select from branch list below)</label>
+            <input type="text" class="form-control" id="subInputName" placeholder="e.g. Data Structures & Algorithms" required />
+            <div style="margin-top:0.45rem;">
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.25rem; display:flex; justify-content:space-between;">
+                <span>📜 Scroll branch subjects:</span>
+                <span style="font-size:0.7rem; color:var(--primary-600);">Click to select or + Add</span>
+              </div>
+              <div id="subSubjectQuickList" class="subject-quicklist-scroll-box">
+                <!-- Subject pills populated dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Subject Code</label>
+              <input type="text" class="form-control" id="subInputCode" placeholder="e.g. CS201" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Short Name / Tag</label>
+              <input type="text" class="form-control" id="subInputShort" placeholder="e.g. DSA" />
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Faculty Name</label>
+              <input type="text" class="form-control" id="subInputFaculty" placeholder="Prof. S. Verma" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Credits</label>
+              <input type="number" class="form-control" id="subInputCredits" value="4" />
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Classes Attended So Far</label>
+              <input type="number" class="form-control" id="subInputAttended" value="0" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Total Conducted So Far</label>
+              <input type="number" class="form-control" id="subInputTotal" value="0" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalAddSubject')">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="font-weight:700; padding:0.6rem 1.25rem;">✓ OK, Add Subject</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Exam Entry -->
+  <div class="modal-backdrop" id="modalAddExam">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem; font-weight: 800;">Add Exam Schedule</h3>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalAddExam')">✕</button>
+      </div>
+      <form id="addExamForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Subject Name</label>
+            <input type="text" class="form-control" id="examInputSubject" placeholder="e.g. Computer Networks & Security" required />
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Subject Code</label>
+              <input type="text" class="form-control" id="examInputCode" placeholder="e.g. CS407" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select class="form-control" id="examInputCategory">
+                <option value="Mid-Term Examination">Mid-Term Examination</option>
+                <option value="Final End-Sem Examination">Final End-Sem Examination</option>
+                <option value="Practical Lab Exam">Practical Lab Exam</option>
+                <option value="Surprise Quiz">Surprise Quiz</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1.4fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Exam Date & Time</label>
+              <input type="datetime-local" class="form-control" id="examInputDate" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Weightage</label>
+              <input type="text" class="form-control" id="examInputWeightage" value="30%" />
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Room / Hall</label>
+              <input type="text" class="form-control" id="examInputRoom" placeholder="Exam Hall 1" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Desk / Seat Number</label>
+              <input type="text" class="form-control" id="examInputSeat" placeholder="EH-44" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalAddExam')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Schedule Exam</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Semester SPI / SGPA & CGPA Calculator -->
+  <div class="modal-backdrop" id="modalAddSpi">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem; font-weight: 800;">Add Semester SPI / SGPA</h3>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalAddSpi')">✕</button>
+      </div>
+      <form id="addSpiForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Semester</label>
+            <select class="form-control" id="spiInputSemester">
+              <option value="Sem 1">Semester 1 (Sem 1)</option>
+              <option value="Sem 2">Semester 2 (Sem 2)</option>
+              <option value="Sem 3">Semester 3 (Sem 3)</option>
+              <option value="Sem 4">Semester 4 (Sem 4)</option>
+              <option value="Sem 5">Semester 5 (Sem 5)</option>
+              <option value="Sem 6">Semester 6 (Sem 6)</option>
+              <option value="Sem 7">Semester 7 (Sem 7)</option>
+              <option value="Sem 8">Semester 8 (Sem 8)</option>
+            </select>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Semester SPI / SGPA (0 - 10)</label>
+              <input type="number" step="0.01" min="0" max="10" class="form-control" id="spiInputGpa" placeholder="e.g. 8.75" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Semester Credits</label>
+              <input type="number" min="1" max="50" class="form-control" id="spiInputCredits" value="20" required />
+            </div>
+          </div>
+          <div style="background:var(--bg-card-subtle); padding:0.85rem; border-radius:var(--radius-md); font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem; border:1px solid var(--border-light);">
+            💡 <strong>Automatic CGPA Calculation:</strong> Your overall Cumulative CGPA will be dynamically calculated as: 
+            $$\text{CGPA} = \frac{\sum (\text{SPI}_i \times \text{Credits}_i)}{\sum \text{Credits}_i}$$
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalAddSpi')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save & Calculate CGPA</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Global Search Palette (⌘K / Ctrl+K) -->
+  <div class="modal-backdrop" id="searchModal">
+    <div class="modal-box" style="max-width: 640px;">
+      <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); display:flex; align-items:center; gap:0.75rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="globalSearchInput" placeholder="Type to search subjects, assignments, notes, events, exams..." style="flex:1; border:none; background:none; outline:none; font-size:1.05rem; color:var(--text-main);" />
+        <button class="btn btn-secondary" id="closeSearchBtn" style="padding:0.25rem 0.6rem; font-size:0.75rem;">ESC</button>
+      </div>
+      <div class="modal-body" id="searchResultsContainer" style="max-height: 400px; padding: 0.75rem;">
+        <!-- Search items dynamically populated -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Scroll To Top Button -->
+  <button id="scrollTopBtn" class="scroll-top-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Scroll to Top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <!-- ========================================================================= -->
+  <!-- 4-DIGIT PIN STUDENT SECURITY & PRIVACY LOCK SCREEN OVERLAY                 -->
+  <!-- ========================================================================= -->
+  <div id="appLockScreenOverlay" class="lockscreen-overlay">
+    <div class="lockscreen-container" id="lockscreenContainerBox">
+      <div class="lockscreen-header">
+        <img src="assets/logo.jpg" alt="College Dashboard" class="lockscreen-logo" />
+        <h2 class="lockscreen-title">Student Privacy Vault</h2>
+        <div class="lockscreen-user-badge">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80" id="lockscreenAvatar" alt="Avatar" class="lockscreen-avatar" />
+          <div>
+            <div class="lockscreen-username" id="lockscreenStudentName">Student Account</div>
+            <div class="lockscreen-user-sub">🔒 Confidential Academic Vault</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lockscreen-pin-section">
+        <p class="lockscreen-instruction" id="lockscreenPromptText">Enter your 4-digit security PIN</p>
+        
+        <!-- 4 Animated PIN Dots -->
+        <div class="pin-dots-row" id="lockscreenPinDots">
+          <div class="pin-dot" id="pdot0"></div>
+          <div class="pin-dot" id="pdot1"></div>
+          <div class="pin-dot" id="pdot2"></div>
+          <div class="pin-dot" id="pdot3"></div>
+        </div>
+
+        <div class="lockscreen-error-msg" id="lockscreenErrorMsg"></div>
+
+        <!-- Numeric On-Screen Keypad -->
+        <div class="pin-keypad-grid">
+          <button type="button" class="pin-key-btn" onclick="app.enterPinDigit('1')">1</button>
+          <button type="button" class="pin-key-btn" onclick="app.enterPinDigit('2')">2</button>
+          <button type="button" class="pin-key-btn" onclick="app.enterPinDigit('3')">3</button>
+          <button type="button" class="pin-key-btn" onclick="app.enterPinDigit('4')">4</button>
+          <button type="button" class="pin-key-btn" onclick="app.enterPinDigit('5')">5</button>
+          <button type="button" class="pin-key-btn" onclick="app.enterPinDigit('6')">6</button>
+          <button type="button" class="pin-key-btn" onclick="app.enterPinDigit('7')">7</button>
+          <button type="button" class="pin-key-btn" onclick="app.enterPinDigit('8')">8</button>
+          <button type="button" class="pin-key-btn" onclick="app.enterPinDigit('9')">9</button>
+          <button type="button" class="pin-key-btn pin-key-action" onclick="app.clearPinEntry()">CLR</button>
+          <button type="button" class="pin-key-btn" onclick="app.enterPinDigit('0')">0</button>
+          <button type="button" class="pin-key-btn pin-key-action" onclick="app.backspacePinEntry()">⌫</button>
+        </div>
+
+        <div class="lockscreen-footer-links">
+          <button type="button" class="lockscreen-link-btn" onclick="app.openForgotPinModal()">Forgot PIN / Reset</button>
+          <span style="color:var(--text-muted);">•</span>
+          <button type="button" class="lockscreen-link-btn" onclick="app.openStudentLoginModal()">Switch Student</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Set / Change 4-Digit Security PIN -->
+  <div class="modal-backdrop" id="modalSetSecurityPin">
+    <div class="modal-box" style="max-width: 460px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.65rem;">
+          <div style="font-size:1.4rem;">🔐</div>
+          <div>
+            <h3 style="font-size: 1.2rem; font-weight: 800;">4-Digit Privacy PIN</h3>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Protect your academic data from roommates & leaks</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalSetSecurityPin')">✕</button>
+      </div>
+      <form id="setSecurityPinForm">
+        <div class="modal-body" style="padding:1.5rem;">
+          <div style="background:var(--primary-50); border:1px solid var(--primary-100); border-radius:var(--radius-md); padding:0.85rem; font-size:0.8rem; color:var(--primary-900); margin-bottom:1.25rem;">
+            🛡️ <strong>Student Privacy Shield:</strong> When enabled, your dashboard requires this 4-digit PIN every time the page opens or when you click <strong>🔒 Lock</strong>.
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Enter 4-Digit Security PIN <span style="color:var(--danger);">*</span></label>
+            <input type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" class="form-control" id="pinInputNew" placeholder="••••" style="letter-spacing:6px; font-weight:800; font-size:1.4rem; text-align:center;" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Confirm 4-Digit PIN <span style="color:var(--danger);">*</span></label>
+            <input type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" class="form-control" id="pinInputConfirm" placeholder="••••" style="letter-spacing:6px; font-weight:800; font-size:1.4rem; text-align:center;" required />
+          </div>
+
+          <div style="display:flex; align-items:center; gap:0.5rem; margin-top:1rem;">
+            <input type="checkbox" id="pinInputEnabled" checked />
+            <label for="pinInputEnabled" style="font-size:0.84rem; cursor:pointer; font-weight:600;">Enable PIN Protection on this Device</label>
+          </div>
+        </div>
+        <div class="modal-footer" style="display:flex; justify-content:space-between;">
+          <button type="button" class="btn btn-secondary" style="color:var(--danger);" onclick="app.disableSecurityPin()">Remove PIN</button>
+          <div style="display:flex; gap:0.5rem;">
+            <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalSetSecurityPin')">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="font-weight:700;">✓ Save 4-Digit PIN</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
