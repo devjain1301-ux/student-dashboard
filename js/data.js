@@ -318,5 +318,38 @@ const DEFAULT_DATA = {
       completed: false,
       notes: "Cardio and badminton practice match"
     }
+  ],
+
+  gamification: {
+    xp: 480,
+    level: 3,
+    title: "Curious Scholar",
+    streak: 5,
+    lastStudyDate: new Date().toISOString().split("T")[0],
+    weeklyStudyDays: [true, true, true, false, true, true, false]
+  },
+
+  dashboardWidgets: {
+    todayHub: true,
+    gamification: true,
+    timetable: true,
+    attendance: true,
+    exams: true,
+    assignments: true,
+    expenses: true,
+    travel: true,
+    notes: true
+  },
+
+  studyLogs: [
+    {
+      id: "log_1",
+      date: new Date().toISOString().split("T")[0],
+      subject: "Data Structures",
+      durationMins: 45,
+      xpEarned: 40,
+      notes: "Binary Search Trees & AVL rotations"
+    }
   ]
 };
+

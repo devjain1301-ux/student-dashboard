@@ -127,7 +127,10 @@ class StorageManager {
           notices: parsed.notices || DEFAULT_DATA.notices || [],
           expenses: parsed.expenses || DEFAULT_DATA.expenses || { monthlyBudget: 10000, items: [] },
           travel: parsed.travel || DEFAULT_DATA.travel || [],
-          calendarActivities: parsed.calendarActivities || DEFAULT_DATA.calendarActivities || []
+          calendarActivities: parsed.calendarActivities || DEFAULT_DATA.calendarActivities || [],
+          gamification: { ...DEFAULT_DATA.gamification, ...(parsed.gamification || {}) },
+          dashboardWidgets: { ...DEFAULT_DATA.dashboardWidgets, ...(parsed.dashboardWidgets || {}) },
+          studyLogs: parsed.studyLogs || DEFAULT_DATA.studyLogs || []
         };
       }
     } catch (e) {
@@ -634,6 +637,110 @@ class StorageManager {
         this.saveData();
       }
     }
+  }
+
+  // ==========================================
+  // GAMIFICATION, STUDY STREAK & DASHBOARD WIDGETS
+  // ==========================================
+  awardXP(amount, reason = "Activity Completed") {
+    if (!this.data.gamification) {
+      this.data.gamification = { ...DEFAULT_DATA.gamification };
+    }
+
+    const gam = this.data.gamification;
+    const oldLevel = gam.level || 1;
+    gam.xp = (gam.xp || 0) + amount;
+
+    const titles = [
+      "Freshman Explorer",
+      "Code Apprentice",
+      "Curious Scholar",
+      "Algorithm Pioneer",
+      "Academic Ace",
+      "Senior Contender",
+      "Campus Vanguard",
+      "University Legend"
+    ];
+
+    const xpPerLevel = 250;
+    const newLevel = Math.floor(gam.xp / xpPerLevel) + 1;
+    gam.level = newLevel;
+    gam.title = titles[Math.min(newLevel - 1, titles.length - 1)];
+
+    this.saveData();
+
+    return {
+      amount,
+      reason,
+      totalXP: gam.xp,
+      level: gam.level,
+      title: gam.title,
+      leveledUp: newLevel > oldLevel,
+      currentLevelBaseXP: (newLevel - 1) * xpPerLevel,
+      nextLevelTargetXP: newLevel * xpPerLevel
+    };
+  }
+
+  logStudySession(durationMins, subject, notes = "") {
+    if (!this.data.studyLogs) this.data.studyLogs = [];
+    if (!this.data.gamification) this.data.gamification = { ...DEFAULT_DATA.gamification };
+
+    const gam = this.data.gamification;
+    const todayStr = new Date().toISOString().split("T")[0];
+    const dayOfWeek = new Date().getDay(); // 0 is Sunday, 1 is Monday
+
+    // Streak calculation
+    if (gam.lastStudyDate) {
+      const lastDate = new Date(gam.lastStudyDate);
+      const today = new Date(todayStr);
+      const diffDays = Math.floor((today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 1) {
+        gam.streak = (gam.streak || 0) + 1;
+      } else if (diffDays > 1) {
+        gam.streak = 1;
+      }
+    } else {
+      gam.streak = 1;
+    }
+
+    gam.lastStudyDate = todayStr;
+
+    // Update 7-day weekly study array (Mon-Sun mapped to 0-6)
+    const mapDayIndex = (dayOfWeek + 6) % 7; // Mon=0, Tue=1 ... Sun=6
+    if (!Array.isArray(gam.weeklyStudyDays)) {
+      gam.weeklyStudyDays = [false, false, false, false, false, false, false];
+    }
+    gam.weeklyStudyDays[mapDayIndex] = true;
+
+    // XP calculation: 1 XP per minute, min 25, bonus for long focus sessions
+    const xpEarned = Math.max(25, Math.floor(durationMins * 1.2));
+
+    const newLog = {
+      id: "log_" + Date.now(),
+      date: todayStr,
+      subject: subject || "General Study",
+      durationMins: parseInt(durationMins) || 45,
+      xpEarned,
+      notes: notes || ""
+    };
+
+    this.data.studyLogs.unshift(newLog);
+    const xpResult = this.awardXP(xpEarned, `Logged ${durationMins}m Study Sprint`);
+
+    return {
+      log: newLog,
+      streak: gam.streak,
+      xpResult
+    };
+  }
+
+  updateDashboardWidgets(config) {
+    this.data.dashboardWidgets = {
+      ...(this.data.dashboardWidgets || DEFAULT_DATA.dashboardWidgets),
+      ...config
+    };
+    this.saveData();
   }
 }
 

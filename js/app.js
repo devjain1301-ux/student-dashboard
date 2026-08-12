@@ -47,12 +47,19 @@ class UniSphereApp {
     this.calendarActivityFilter = "all";
     this.calendarVenueFilter = null;
 
+    // PWA & Notification State
+    this.deferredPWAInstallPrompt = null;
+    this.notifications = [];
+
     this.initTheme();
     this.initNavigation();
     this.initSearch();
     this.initClockAndTimers();
     this.initStreamAndBranchSelectors();
     this.initScrollToTopListener();
+    this.initPWA();
+    this.initSmartNotifications();
+    this.initKeyboardShortcuts();
     this.renderAvatarGallery();
     this.bindEvents();
     this.renderAll();
@@ -394,6 +401,7 @@ class UniSphereApp {
     this.updateClock();
     setInterval(() => this.updateClock(), 1000);
     setInterval(() => this.updateExamsLiveCountdown(), 1000);
+    setInterval(() => this.updateBigExamLiveCountdown(), 1000);
   }
 
   updateClock() {
@@ -431,6 +439,7 @@ class UniSphereApp {
     this.renderCalendar();
     this.renderProfile();
     this.updateNavBadges();
+    this.generateSmartNotifications();
   }
 
   updateNavBadges() {
@@ -529,8 +538,11 @@ class UniSphereApp {
     const dashBudgetVal = document.getElementById("dashStatBudget");
     if (dashBudgetVal) dashBudgetVal.textContent = `₹${balance.toLocaleString()}`;
 
-    // 6. Render Current Class Happening Now Banner
-    this.renderCurrentClassBanner();
+    // 6. Render Mega Features on Dashboard
+    this.renderTodayHub();
+    this.renderGamification();
+    this.renderBigExamCountdownCard();
+    this.renderCustomizedWidgets();
 
     // 7. Today's Class Schedule on Dashboard
     this.renderDashboardTodaySchedule();
@@ -2481,6 +2493,46 @@ class UniSphereApp {
       this.showToast(`Saved stop: "${title}" at ${venue}! 📅`, "success");
     });
 
+    // Log Study Form
+    const studyForm = document.getElementById("logStudyForm");
+    studyForm?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const subject = document.getElementById("studyInputSubject").value.trim();
+      const duration = parseInt(document.getElementById("studyInputDuration").value) || 25;
+      const notes = document.getElementById("studyInputNotes").value.trim();
+
+      const result = this.storage.logStudySession(duration, subject, notes);
+      this.closeModal("modalLogStudy");
+      studyForm.reset();
+      this.renderGamification();
+      this.renderDashboard();
+      this.showFloatingXp(result.xpResult.amount, `Study Sprint Logged! 🧠`);
+      this.showToast(`🔥 ${result.streak} Day Study Streak Active! +${result.xpResult.amount} XP`, "success");
+    });
+
+    // Customize Dashboard Form
+    const customForm = document.getElementById("customizeDashboardForm");
+    customForm?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const todayHub = document.getElementById("widgetToggleTodayHub")?.checked ?? true;
+      const gamification = document.getElementById("widgetToggleGamification")?.checked ?? true;
+      const exams = document.getElementById("widgetToggleExams")?.checked ?? true;
+      const timetable = document.getElementById("widgetToggleTimetable")?.checked ?? true;
+      const assignments = document.getElementById("widgetToggleAssignments")?.checked ?? true;
+
+      this.storage.updateDashboardWidgets({
+        todayHub,
+        gamification,
+        exams,
+        timetable,
+        assignments
+      });
+
+      this.closeModal("modalCustomizeDashboard");
+      this.renderCustomizedWidgets();
+      this.showToast("Dashboard widgets updated! 🎨", "success");
+    });
+
     // Backdrop click to close modals (except mandatory login)
     document.querySelectorAll(".modal-backdrop").forEach(backdrop => {
       backdrop.addEventListener("click", (e) => {
@@ -3085,6 +3137,781 @@ class UniSphereApp {
       this.renderCalendar();
       this.showToast("Activity removed", "info");
     }
+  }
+
+  // ==========================================
+  // MEGA FEATURE 1: 🎯 SMART TODAY COMMAND CENTER & NEXT CLASS COUNTDOWN
+  // ==========================================
+  renderTodayHub() {
+    const data = this.storage.data;
+    const todayName = this.getTodayName();
+    const classes = (data.timetable && data.timetable[todayName]) || [];
+    
+    // 1. Next Lecture Live Box
+    const nextLectureContainer = document.getElementById("todayNextLectureBox");
+    if (nextLectureContainer) {
+      if (classes.length === 0) {
+        nextLectureContainer.innerHTML = `
+          <div style="text-align:center; padding:1.5rem 1rem; color:var(--text-muted);">
+            <div style="font-size:2.2rem; margin-bottom:0.35rem;">🎉</div>
+            <h4 style="font-size:1.05rem; font-weight:800; color:var(--text-heading); margin-bottom:0.25rem;">No Classes Scheduled for ${todayName}</h4>
+            <p style="font-size:0.8rem; margin-bottom:0.75rem;">Enjoy your free study day or log a focus sprint</p>
+            <button class="btn btn-primary" style="font-size:0.8rem; padding:0.4rem 0.9rem;" onclick="app.openModal('modalAddClass')">+ Add Lecture</button>
+          </div>
+        `;
+      } else {
+        const now = new Date();
+        const currentMins = now.getHours() * 60 + now.getMinutes();
+
+        let nextClass = null;
+        let activeClass = null;
+
+        classes.forEach(c => {
+          const parts = (c.time || "").split("-");
+          if (parts.length >= 1) {
+            const startStr = parts[0].trim();
+            const endStr = parts[1] ? parts[1].trim() : "";
+            const startMins = this.parseTimeStringToMinutes(startStr);
+            const endMins = endStr ? this.parseTimeStringToMinutes(endStr) : startMins + 60;
+
+            if (currentMins >= startMins && currentMins <= endMins && !activeClass) {
+              activeClass = { ...c, _startMins: startMins, _endMins: endMins };
+            } else if (startMins > currentMins && (!nextClass || startMins < nextClass._startMins)) {
+              nextClass = { ...c, _startMins: startMins, _endMins: endMins };
+            }
+          }
+        });
+
+        const target = activeClass || nextClass || classes[0];
+        const isHappeningNow = !!activeClass;
+
+        nextLectureContainer.innerHTML = `
+          <div>
+            <div class="today-next-lecture-header">
+              <span class="today-live-countdown-badge" id="todayCountdownBadgeSlot">
+                ${isHappeningNow ? '🟢 IN PROGRESS NOW' : '⏰ NEXT LECTURE'}
+              </span>
+              <span class="type-pill ${target.type ? target.type.toLowerCase() : 'theory'}">${target.type || 'Lecture'}</span>
+            </div>
+            
+            <h3 class="today-lecture-title">${target.subject}</h3>
+            
+            <div class="today-lecture-meta">
+              <span>📍 <strong>${target.room}</strong></span>
+              <span>•</span>
+              <span>👨‍🏫 ${target.professor}</span>
+              <span>•</span>
+              <span>⏰ ${target.time}</span>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-light); padding-top:0.75rem; margin-top:0.5rem;">
+            <div style="font-size:0.78rem; color:var(--text-muted);">
+              ${isHappeningNow ? 'Session ending soon' : 'Starts in real-time countdown'}
+            </div>
+            <button class="btn btn-primary" style="font-size:0.78rem; padding:0.35rem 0.8rem; font-weight:700;" onclick="app.quickMarkSubjectAttendance('${target.subjectId}', 1)">
+              ✓ Mark Present (+15 XP)
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    // 2. Attendance Risk Snapshot
+    let totalClasses = 0;
+    let totalAttended = 0;
+    (data.subjects || []).forEach(s => {
+      totalClasses += s.totalClasses || 0;
+      totalAttended += s.attendedClasses || 0;
+    });
+    const overallPct = totalClasses > 0 ? Math.round((totalAttended / totalClasses) * 100) : 0;
+    const riskBadge = document.getElementById("todayAttRiskBadge");
+    const riskText = document.getElementById("todayAttRiskText");
+
+    if (riskBadge && riskText) {
+      if (totalClasses === 0) {
+        riskBadge.className = "risk-badge-pill safe";
+        riskBadge.textContent = "🟢 New Sem";
+        riskText.textContent = "0 classes logged yet — attendance tracking initialized";
+      } else if (overallPct >= 80) {
+        const safeMisses = Math.floor((totalAttended - 0.75 * totalClasses) / 0.75);
+        riskBadge.className = "risk-badge-pill safe";
+        riskBadge.textContent = `🟢 Safe (${overallPct}%)`;
+        riskText.textContent = safeMisses > 0 ? `You can safely miss up to ${safeMisses} lecture(s) above 75% cutoff` : `Optimal attendance maintained above 80%`;
+      } else if (overallPct >= 75) {
+        riskBadge.className = "risk-badge-pill caution";
+        riskBadge.textContent = `🟠 Attention (${overallPct}%)`;
+        riskText.textContent = `Borderline cutoff! Attend your next classes to stay safe`;
+      } else {
+        const need = Math.ceil(3 * totalClasses - 4 * totalAttended);
+        riskBadge.className = "risk-badge-pill critical";
+        riskBadge.textContent = `🔴 Critical (${overallPct}%)`;
+        riskText.textContent = `Shortage alert! Attend next ${need} classes consecutively to hit 75%`;
+      }
+    }
+
+    // 3. Priority Task Snapshot
+    const pendingTasks = (data.assignments || []).filter(a => a.status !== "Submitted");
+    const taskDueText = document.getElementById("todayTaskDueText");
+    const taskDueTag = document.getElementById("todayTaskDueTag");
+
+    if (taskDueText && taskDueTag) {
+      if (pendingTasks.length === 0) {
+        taskDueTag.textContent = "✓ All Done";
+        taskDueTag.style.color = "var(--success)";
+        taskDueText.textContent = "Zero pending tasks! You're completely caught up with coursework.";
+      } else {
+        const earliest = [...pendingTasks].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))[0];
+        const days = this.calculateDaysRemaining(earliest.dueDate);
+        taskDueTag.textContent = days <= 1 ? "🚨 Urgent" : `⏳ Due in ${days}d`;
+        taskDueTag.style.color = days <= 1 ? "var(--danger)" : "var(--warning)";
+        taskDueText.textContent = `"${earliest.title}" (${earliest.subject}) — Max Marks: ${earliest.maxMarks || 20}`;
+      }
+    }
+  }
+
+  parseTimeStringToMinutes(timeStr) {
+    if (!timeStr) return 0;
+    const clean = timeStr.trim().toUpperCase();
+    const isPM = clean.includes("PM");
+    const isAM = clean.includes("AM");
+    const digits = clean.replace(/[^\d:]/g, "");
+    const parts = digits.split(":");
+    let hours = parseInt(parts[0]) || 0;
+    const mins = parseInt(parts[1]) || 0;
+
+    if (isPM && hours < 12) hours += 12;
+    if (isAM && hours === 12) hours = 0;
+
+    return hours * 60 + mins;
+  }
+
+  // ==========================================
+  // MEGA FEATURE 2: 🚨 ATTENDANCE RISK CALCULATOR
+  // ==========================================
+  calculateAttendanceRisk(subject) {
+    const total = subject.totalClasses || 0;
+    const attended = subject.attendedClasses || 0;
+
+    if (total === 0) {
+      return {
+        status: "safe",
+        badgeClass: "risk-badge-pill safe",
+        label: "🟢 Safe",
+        advice: "0 classes conducted yet (Click + Present to log attendance)",
+        safeMisses: 0,
+        neededClasses: 0,
+        pct: 0
+      };
+    }
+
+    const pct = Math.round((attended / total) * 100);
+
+    if (pct >= 80) {
+      const safeMisses = Math.floor((attended - 0.75 * total) / 0.75);
+      return {
+        status: "safe",
+        badgeClass: "risk-badge-pill safe",
+        label: "🟢 Safe",
+        advice: safeMisses > 0 ? `🛡️ You can safely miss up to ${safeMisses} lecture${safeMisses === 1 ? '' : 's'} while staying above 75%` : `✓ Excellent! Attendance is above 80% — keep attending!`,
+        safeMisses,
+        neededClasses: 0,
+        pct
+      };
+    } else if (pct >= 75) {
+      return {
+        status: "caution",
+        badgeClass: "risk-badge-pill caution",
+        label: "🟠 Attention Needed",
+        advice: `⚠️ Borderline! Attend your next classes to stay strictly above the mandatory 75% cutoff`,
+        safeMisses: 0,
+        neededClasses: 1,
+        pct
+      };
+    } else {
+      const neededClasses = Math.max(1, Math.ceil(3 * total - 4 * attended));
+      return {
+        status: "critical",
+        badgeClass: "risk-badge-pill critical",
+        label: "🔴 Critical Risk",
+        advice: `🚨 Attendance Shortage! Attend next ${neededClasses} consecutive lecture${neededClasses === 1 ? '' : 's'} without missing any to restore 75% eligibility`,
+        safeMisses: 0,
+        neededClasses,
+        pct
+      };
+    }
+  }
+
+  // ==========================================
+  // MEGA FEATURE 3: 📅 BIG EXAM COUNTDOWN SHOWCASE
+  // ==========================================
+  renderBigExamCountdownCard() {
+    const container = document.getElementById("dashBigExamCountdownCard");
+    if (!container) return;
+
+    const data = this.storage.data;
+    const exams = (data.exams || []).slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+    const nextExam = exams[0];
+
+    if (!nextExam) {
+      container.innerHTML = `
+        <div class="card" style="background:var(--bg-card-subtle); border:1px dashed var(--border-color); text-align:center; padding:1.75rem;">
+          <div style="font-size:2rem; margin-bottom:0.35rem;">🎯</div>
+          <h4 style="font-size:1.1rem; font-weight:800; color:var(--text-heading); margin-bottom:0.25rem;">No Exams Scheduled Yet</h4>
+          <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.85rem;">Plan ahead for mid-terms or final semester papers</p>
+          <button class="btn btn-primary" style="font-size:0.8rem; padding:0.4rem 0.9rem;" onclick="app.openModal('modalAddExam')">+ Schedule First Exam</button>
+        </div>
+      `;
+      return;
+    }
+
+    const topics = nextExam.syllabusTopics || [];
+    const completedTopics = topics.filter(t => t.completed).length;
+    const prepPct = topics.length > 0 ? Math.round((completedTopics / topics.length) * 100) : 60;
+    const examDate = new Date(nextExam.date);
+
+    container.innerHTML = `
+      <div class="big-exam-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.75rem; position:relative; z-index:2;">
+          <div>
+            <span class="hero-badge-pill" style="background:rgba(255,255,255,0.15); color:#E0E7FF; font-weight:800; border:1px solid rgba(255,255,255,0.25);">
+              📅 UPCOMING EXAMINATION SHOWCASE
+            </span>
+            <h2 style="font-size:1.8rem; font-weight:800; color:white; margin:0.35rem 0 0.2rem;">${nextExam.subject}</h2>
+            <div style="display:flex; gap:1rem; font-size:0.86rem; color:#C7D2FE; flex-wrap:wrap;">
+              <span>📅 ${examDate.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}</span>
+              <span>📍 Room: <strong>${nextExam.room}</strong></span>
+              <span>🪑 Seat: <strong>${nextExam.seatNo || 'Allocated on Hall Ticket'}</strong></span>
+            </div>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:var(--radius-lg); padding:0.75rem 1.25rem; text-align:right;">
+            <div style="font-size:0.7rem; color:#C7D2FE; text-transform:uppercase; font-weight:700;">Max Marks</div>
+            <div style="font-size:1.5rem; font-weight:800; color:white;">${nextExam.totalMarks || 100}</div>
+            <div style="font-size:0.72rem; color:#A5B4FC;">Weightage: ${nextExam.weightage || '30%'}</div>
+          </div>
+        </div>
+
+        <!-- Real-Time Ticking Countdown Units -->
+        <div class="big-exam-countdown-grid" id="dashBigExamCountdownSlots" style="position:relative; z-index:2;">
+          <!-- Ticked via updateBigExamLiveCountdown() -->
+        </div>
+
+        <!-- Syllabus Progress -->
+        <div style="position:relative; z-index:2; margin-top:0.5rem;">
+          <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:#C7D2FE; margin-bottom:0.35rem;">
+            <span>Syllabus Revision Preparedness</span>
+            <span><strong>${prepPct}% Prepared</strong></span>
+          </div>
+          <div style="width:100%; height:8px; background:rgba(255,255,255,0.15); border-radius:var(--radius-full); overflow:hidden;">
+            <div style="width:${prepPct}%; height:100%; background:linear-gradient(90deg, #10B981, #06B6D4); border-radius:var(--radius-full);"></div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    this.updateBigExamLiveCountdown();
+  }
+
+  updateBigExamLiveCountdown() {
+    const slotContainer = document.getElementById("dashBigExamCountdownSlots");
+    if (!slotContainer) return;
+
+    const data = this.storage.data;
+    const exams = (data.exams || []).slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+    const nextExam = exams[0];
+    if (!nextExam) return;
+
+    const targetDate = new Date(nextExam.date).getTime();
+    const now = new Date().getTime();
+    const diff = targetDate - now;
+
+    if (diff <= 0) {
+      slotContainer.innerHTML = `
+        <div class="countdown-block" style="min-width:100%;">
+          <div class="countdown-block-val" style="font-size:1.1rem; color:#10B981;">🏁 EXAM HAPPENING TODAY / IN SESSION</div>
+        </div>
+      `;
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+    slotContainer.innerHTML = `
+      <div class="countdown-block">
+        <div class="countdown-block-val">${String(days).padStart(2, "0")}</div>
+        <div class="countdown-block-unit">Days</div>
+      </div>
+      <div class="countdown-block">
+        <div class="countdown-block-val">${String(hours).padStart(2, "0")}</div>
+        <div class="countdown-block-unit">Hours</div>
+      </div>
+      <div class="countdown-block">
+        <div class="countdown-block-val">${String(mins).padStart(2, "0")}</div>
+        <div class="countdown-block-unit">Minutes</div>
+      </div>
+      <div class="countdown-block">
+        <div class="countdown-block-val" style="color:#38BDF8;">${String(secs).padStart(2, "0")}</div>
+        <div class="countdown-block-unit">Seconds</div>
+      </div>
+    `;
+  }
+
+  // ==========================================
+  // MEGA FEATURE 4 & 5: 🧠 STUDY STREAK & 🏆 STUDENT GAMIFICATION
+  // ==========================================
+  renderGamification() {
+    const data = this.storage.data;
+    const gam = data.gamification || { xp: 480, level: 3, title: "Curious Scholar", streak: 5, weeklyStudyDays: [true, true, true, false, true, true, false] };
+
+    const streakCountEl = document.getElementById("dashStreakCount");
+    if (streakCountEl) streakCountEl.textContent = gam.streak || 1;
+
+    // 7-Day Consistency Dot Matrix
+    const weeklyContainer = document.getElementById("dashWeeklyStreakDots");
+    if (weeklyContainer) {
+      const dayLetters = ["M", "T", "W", "T", "F", "S", "S"];
+      const daysArr = Array.isArray(gam.weeklyStudyDays) ? gam.weeklyStudyDays : [true, true, true, false, true, true, false];
+
+      weeklyContainer.innerHTML = dayLetters.map((letter, i) => {
+        const isActive = !!daysArr[i];
+        return `
+          <div class="weekly-day-dot ${isActive ? 'active' : ''}">
+            <div class="dot-circle">${isActive ? '✓' : ''}</div>
+            <span class="day-label">${letter}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // Level & XP Bar
+    const levelBadge = document.getElementById("dashStudentLevelBadge");
+    const levelTitle = document.getElementById("dashStudentLevelTitle");
+    const xpFraction = document.getElementById("dashStudentXpFraction");
+    const xpFill = document.getElementById("dashStudentXpBarFill");
+    const xpNextText = document.getElementById("dashXpNextLevelText");
+
+    const currentXP = gam.xp || 0;
+    const currentLevel = gam.level || 1;
+    const xpPerLevel = 250;
+    const baseLevelXP = (currentLevel - 1) * xpPerLevel;
+    const nextLevelXP = currentLevel * xpPerLevel;
+    const levelProgress = Math.max(0, currentXP - baseLevelXP);
+    const pct = Math.min(100, Math.round((levelProgress / xpPerLevel) * 100));
+
+    if (levelBadge) levelBadge.textContent = `Level ${currentLevel}`;
+    if (levelTitle) levelTitle.textContent = gam.title || "Curious Scholar";
+    if (xpFraction) xpFraction.textContent = `${currentXP} / ${nextLevelXP} XP`;
+    if (xpFill) xpFill.style.width = `${pct}%`;
+    if (xpNextText) xpNextText.textContent = `+${Math.max(0, nextLevelXP - currentXP)} XP to Level ${currentLevel + 1}`;
+  }
+
+  selectStudyDuration(mins, btnEl) {
+    const input = document.getElementById("studyInputDuration");
+    if (input) input.value = mins;
+
+    document.querySelectorAll("#modalLogStudy .filter-chip-btn").forEach(b => b.classList.remove("active"));
+    if (btnEl) btnEl.classList.add("active");
+
+    const badge = document.getElementById("studyXpPreviewBadge");
+    if (badge) {
+      const reward = Math.max(25, Math.floor(mins * 1.2));
+      badge.textContent = `+${reward} XP 🌟`;
+    }
+  }
+
+  showFloatingXp(amount, reason = "") {
+    const popup = document.createElement("div");
+    popup.className = "xp-floating-popup";
+    popup.innerHTML = `<span>🌟 +${amount} XP</span> <span style="font-size:0.82rem; font-weight:600;">${reason}</span>`;
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 2600);
+  }
+
+  // ==========================================
+  // MEGA FEATURE 6: 🤖 CAMPUSHUB OFFLINE AI ASSISTANT
+  // ==========================================
+  toggleAssistantDrawer(forceState = null) {
+    const drawer = document.getElementById("campusAssistantDrawer");
+    if (!drawer) return;
+    if (forceState !== null) {
+      if (forceState) drawer.classList.add("active");
+      else drawer.classList.remove("active");
+    } else {
+      drawer.classList.toggle("active");
+    }
+  }
+
+  sendAssistantPrompt(text) {
+    const input = document.getElementById("assistantInputText");
+    if (input) {
+      input.value = text;
+      this.handleAssistantSubmit(new Event("submit"));
+    }
+  }
+
+  handleAssistantSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const input = document.getElementById("assistantInputText");
+    const container = document.getElementById("assistantMessagesList");
+    if (!input || !container) return;
+
+    const query = input.value.trim();
+    if (!query) return;
+
+    // Append User Message
+    const userMsg = document.createElement("div");
+    userMsg.className = "ast-msg user";
+    userMsg.innerHTML = `
+      <div class="ast-bubble">${query}</div>
+      <span class="ast-time">${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+    `;
+    container.appendChild(userMsg);
+    input.value = "";
+
+    // Generate Instant Bot Response
+    setTimeout(() => {
+      const botResponse = this.processAssistantQuery(query);
+      const botMsg = document.createElement("div");
+      botMsg.className = "ast-msg bot";
+      botMsg.innerHTML = `
+        <div class="ast-bubble">${botResponse}</div>
+        <span class="ast-time">${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+      `;
+      container.appendChild(botMsg);
+      container.scrollTop = container.scrollHeight;
+    }, 200);
+
+    container.scrollTop = container.scrollHeight;
+  }
+
+  processAssistantQuery(query) {
+    const q = query.toLowerCase();
+    const data = this.storage.data;
+
+    // 1. Tomorrow's Schedule
+    if (q.includes("tomorrow") || q.includes("next day")) {
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const nextDayIdx = (new Date().getDay() + 1) % 7;
+      const nextDayName = nextDayIdx === 0 ? "Monday" : days[nextDayIdx];
+      const tomorrowClasses = (data.timetable && data.timetable[nextDayName]) || [];
+
+      if (tomorrowClasses.length === 0) {
+        return `📅 Tomorrow is <strong>${nextDayName}</strong>. You have <strong>no scheduled lectures</strong> in your timetable. Perfect day to log a focus study sprint or work on assignments!`;
+      }
+
+      const list = tomorrowClasses.map(c => `• <strong>${c.time}</strong>: ${c.subject} (${c.room})`).join("<br/>");
+      return `📅 Here is your schedule for tomorrow (<strong>${nextDayName}</strong>):<br/><br/>${list}`;
+    }
+
+    // 2. Attendance Questions
+    if (q.includes("attendance") || q.includes("75") || q.includes("cutoff") || q.includes("safe") || q.includes("miss")) {
+      let total = 0;
+      let att = 0;
+      const atRisk = [];
+
+      (data.subjects || []).forEach(s => {
+        const t = s.totalClasses || 0;
+        const a = s.attendedClasses || 0;
+        total += t;
+        att += a;
+        if (t > 0 && (a / t) < 0.75) {
+          atRisk.push(`${s.name} (${Math.round((a / t) * 100)}%)`);
+        }
+      });
+
+      const overall = total > 0 ? Math.round((att / total) * 100) : 0;
+      if (atRisk.length === 0) {
+        return `📊 Your overall attendance is <strong>${overall}%</strong>. 🟢 <strong>Safe Status!</strong> All your subjects are currently maintaining the mandatory 75% cutoff threshold!`;
+      } else {
+        return `🚨 <strong>Attendance Alert:</strong> Your overall attendance is <strong>${overall}%</strong>.<br/>Subjects requiring immediate attention:<br/>• ${atRisk.join("<br/>• ")}<br/><br/>Attend next classes consecutively to restore 75% criteria.`;
+      }
+    }
+
+    // 3. Assignment / Due tasks
+    if (q.includes("assignment") || q.includes("due") || q.includes("task") || q.includes("homework")) {
+      const pending = (data.assignments || []).filter(a => a.status !== "Submitted");
+      if (pending.length === 0) {
+        return `🎉 Great news! You have <strong>zero pending assignments</strong>. Everything is currently submitted and up to date.`;
+      }
+      const sorted = [...pending].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+      const first = sorted[0];
+      const days = this.calculateDaysRemaining(first.dueDate);
+      return `📋 Your earliest pending deliverable is <strong>"${first.title}"</strong> for <em>${first.subject}</em> due in <strong>${days} days</strong> (${new Date(first.dueDate).toLocaleDateString()}). You have <strong>${pending.length} total pending tasks</strong>.`;
+    }
+
+    // 4. Exams
+    if (q.includes("exam") || q.includes("midterm") || q.includes("test") || q.includes("paper")) {
+      const exams = (data.exams || []).slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+      if (exams.length === 0) {
+        return `📝 No upcoming examinations are currently scheduled in your dashboard matrix.`;
+      }
+      const next = exams[0];
+      const days = this.calculateDaysRemaining(next.date);
+      return `🎯 Your next scheduled exam is <strong>${next.subject}</strong> in <strong>${days} days</strong> (${new Date(next.date).toLocaleDateString()}) in room <strong>${next.room}</strong> (Seat: ${next.seatNo || 'TBA'}).`;
+    }
+
+    // 5. Where should I go
+    if (q.includes("where") || q.includes("go") || q.includes("venue") || q.includes("room") || q.includes("route")) {
+      const activities = data.calendarActivities || [];
+      const todayStr = new Date().toISOString().split("T")[0];
+      const todayActs = activities.filter(a => a.date === todayStr);
+
+      if (todayActs.length === 0) {
+        return `📍 You don't have any specific campus stops planned today. The <strong>Central Library (3rd Floor)</strong> or <strong>Computer Labs</strong> are great places to study!`;
+      }
+
+      const nextStop = todayActs.find(a => !a.completed) || todayActs[0];
+      return `📍 Your recommended next stop is <strong>${nextStop.venue}</strong> for <em>"${nextStop.title}"</em> (⏰ ${nextStop.startTime} - ${nextStop.endTime}).`;
+    }
+
+    // 6. Streak & XP
+    if (q.includes("streak") || q.includes("xp") || q.includes("level") || q.includes("gamification")) {
+      const gam = data.gamification || { streak: 5, level: 3, xp: 480, title: "Curious Scholar" };
+      return `🔥 You have an active <strong>${gam.streak || 1}-day study streak</strong>!<br/>🏆 You are currently <strong>Level ${gam.level || 1} (${gam.title})</strong> with <strong>${gam.xp || 0} XP</strong>. Log study sprints or submit tasks to earn more XP!`;
+    }
+
+    // Default Fallback
+    return `🤖 I'm here to assist with your college routine! You can ask me about:<br/>• <em>"What do I have tomorrow?"</em><br/>• <em>"How is my attendance?"</em><br/>• <em>"Which assignment is due first?"</em><br/>• <em>"Where should I go now?"</em>`;
+  }
+
+  // ==========================================
+  // MEGA FEATURE 7: 🔔 SMART NOTIFICATIONS CENTER
+  // ==========================================
+  initSmartNotifications() {
+    this.generateSmartNotifications();
+  }
+
+  generateSmartNotifications() {
+    const data = this.storage.data;
+    const notifs = [];
+
+    // 1. Pending Assignment Warnings (< 48h)
+    (data.assignments || []).forEach(a => {
+      if (a.status !== "Submitted") {
+        const days = this.calculateDaysRemaining(a.dueDate);
+        if (days <= 2 && days >= 0) {
+          notifs.push({
+            id: `notif_asg_${a.id}`,
+            icon: "📋",
+            title: `Assignment Due: ${a.title}`,
+            desc: `${a.subject} submission due ${days === 0 ? 'today!' : `in ${days} day(s)`}`,
+            type: "danger"
+          });
+        }
+      }
+    });
+
+    // 2. Attendance Shortage Warnings
+    (data.subjects || []).forEach(s => {
+      if (s.totalClasses > 0 && (s.attendedClasses / s.totalClasses) < 0.75) {
+        const pct = Math.round((s.attendedClasses / s.totalClasses) * 100);
+        notifs.push({
+          id: `notif_att_${s.id}`,
+          icon: "🚨",
+          title: `Attendance Warning: ${s.name}`,
+          desc: `Current attendance is ${pct}%. Attend next lectures to restore 75% criteria.`,
+          type: "warning"
+        });
+      }
+    });
+
+    // 3. Upcoming Exam in next 7 days
+    (data.exams || []).forEach(e => {
+      const days = this.calculateDaysRemaining(e.date);
+      if (days <= 7 && days >= 0) {
+        notifs.push({
+          id: `notif_exam_${e.id}`,
+          icon: "📝",
+          title: `Exam in ${days}d: ${e.subject}`,
+          desc: `Date: ${new Date(e.date).toLocaleDateString()} in ${e.room} (Seat: ${e.seatNo})`,
+          type: "primary"
+        });
+      }
+    });
+
+    // 4. Study Streak Reminder
+    const gam = data.gamification || {};
+    const todayStr = new Date().toISOString().split("T")[0];
+    if (gam.lastStudyDate !== todayStr) {
+      notifs.push({
+        id: "notif_streak",
+        icon: "🔥",
+        title: "Keep your Study Streak Alive!",
+        desc: `Log a 25-minute focus study sprint today to maintain your ${gam.streak || 1}-day streak.`,
+        type: "warning"
+      });
+    }
+
+    this.notifications = notifs;
+
+    // Update Header Badge
+    const badge = document.getElementById("headerNotifBadge");
+    if (badge) {
+      if (notifs.length > 0) {
+        badge.style.display = "flex";
+        badge.textContent = notifs.length;
+      } else {
+        badge.style.display = "none";
+      }
+    }
+
+    // Populate Tray List
+    const trayList = document.getElementById("notifTrayListContainer");
+    if (trayList) {
+      if (notifs.length === 0) {
+        trayList.innerHTML = `
+          <div style="text-align:center; padding:1.5rem 1rem; color:var(--text-muted);">
+            <div style="font-size:1.8rem; margin-bottom:0.25rem;">✨</div>
+            <div style="font-weight:700; font-size:0.86rem; color:var(--text-heading);">All Caught Up!</div>
+            <div style="font-size:0.75rem;">No critical deadlines or attendance alerts</div>
+          </div>
+        `;
+      } else {
+        trayList.innerHTML = notifs.map(n => `
+          <div class="notif-item">
+            <span style="font-size:1.2rem;">${n.icon}</span>
+            <div style="flex:1;">
+              <strong style="font-size:0.82rem; color:var(--text-heading); display:block;">${n.title}</strong>
+              <span style="font-size:0.74rem; color:var(--text-muted); line-height:1.35; display:block;">${n.desc}</span>
+            </div>
+          </div>
+        `).join("");
+      }
+    }
+  }
+
+  toggleNotificationsTray() {
+    const tray = document.getElementById("notificationsTray");
+    if (tray) tray.classList.toggle("active");
+  }
+
+  clearAllNotifications() {
+    this.notifications = [];
+    const badge = document.getElementById("headerNotifBadge");
+    if (badge) badge.style.display = "none";
+    const trayList = document.getElementById("notifTrayListContainer");
+    if (trayList) {
+      trayList.innerHTML = `
+        <div style="text-align:center; padding:1.5rem 1rem; color:var(--text-muted);">
+          <div style="font-size:1.8rem; margin-bottom:0.25rem;">✨</div>
+          <div style="font-weight:700; font-size:0.86rem; color:var(--text-heading);">Alerts Cleared</div>
+        </div>
+      `;
+    }
+  }
+
+  // ==========================================
+  // MEGA FEATURE 8: 🎨 CUSTOM DASHBOARD WIDGETS
+  // ==========================================
+  openCustomizeDashboardModal() {
+    const widgets = this.storage.data.dashboardWidgets || { todayHub: true, gamification: true, exams: true, timetable: true, assignments: true };
+    const tHub = document.getElementById("widgetToggleTodayHub");
+    const tGam = document.getElementById("widgetToggleGamification");
+    const tEx = document.getElementById("widgetToggleExams");
+    const tTime = document.getElementById("widgetToggleTimetable");
+    const tAsg = document.getElementById("widgetToggleAssignments");
+
+    if (tHub) tHub.checked = widgets.todayHub !== false;
+    if (tGam) tGam.checked = widgets.gamification !== false;
+    if (tEx) tEx.checked = widgets.exams !== false;
+    if (tTime) tTime.checked = widgets.timetable !== false;
+    if (tAsg) tAsg.checked = widgets.assignments !== false;
+
+    this.openModal("modalCustomizeDashboard");
+  }
+
+  renderCustomizedWidgets() {
+    const widgets = this.storage.data.dashboardWidgets || {};
+    const map = {
+      todayHub: "widgetTodayHub",
+      gamification: "widgetGamification",
+      exams: "widgetExamsCountdown",
+      timetable: "widgetTimetable",
+      assignments: "widgetAssignments"
+    };
+
+    Object.entries(map).forEach(([key, elementId]) => {
+      const el = document.getElementById(elementId);
+      if (el) {
+        el.style.display = widgets[key] === false ? "none" : "block";
+      }
+    });
+  }
+
+  // ==========================================
+  // MEGA FEATURE 9: 📱 PWA / INSTALLABLE SUPPORT
+  // ==========================================
+  initPWA() {
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(err => {
+          console.log("ServiceWorker registration skipped:", err);
+        });
+      });
+    }
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      this.deferredPWAInstallPrompt = e;
+      const installBtn = document.getElementById("pwaInstallBtn");
+      if (installBtn) installBtn.style.display = "flex";
+    });
+  }
+
+  promptPWAInstall() {
+    if (this.deferredPWAInstallPrompt) {
+      this.deferredPWAInstallPrompt.prompt();
+      this.deferredPWAInstallPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === "accepted") {
+          this.showToast("College Dashboard Installed! 📲", "success");
+        }
+        this.deferredPWAInstallPrompt = null;
+        const installBtn = document.getElementById("pwaInstallBtn");
+        if (installBtn) installBtn.style.display = "none";
+      });
+    } else {
+      alert("📱 To install College Dashboard:\n• Chrome/Edge: Tap 'Install App' in the address bar.\n• iPhone Safari: Tap Share & 'Add to Home Screen'.");
+    }
+  }
+
+  // ==========================================
+  // MEGA FEATURE 10: ⌨️ KEYBOARD SHORTCUTS
+  // ==========================================
+  initKeyboardShortcuts() {
+    window.addEventListener("keydown", (e) => {
+      // Avoid firing shortcuts when typing in inputs/textareas
+      if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
+
+      if (e.key === "?" || e.key === "h") {
+        e.preventDefault();
+        this.openModal("modalKeyboardShortcuts");
+      } else if (e.key === "a" || e.key === "A") {
+        e.preventDefault();
+        this.toggleAssistantDrawer();
+      } else if (e.key === "1") {
+        this.navigateTo("dashboard");
+      } else if (e.key === "2") {
+        this.navigateTo("calendar");
+      } else if (e.key === "3") {
+        this.navigateTo("timetable");
+      } else if (e.key === "4") {
+        this.navigateTo("attendance");
+      } else if (e.key === "5") {
+        this.navigateTo("assignments");
+      } else if (e.key === "6") {
+        this.navigateTo("exams");
+      } else if (e.key === "7") {
+        this.navigateTo("notes");
+      } else if (e.key === "8") {
+        this.navigateTo("events");
+      } else if (e.key === "9") {
+        this.navigateTo("expenses");
+      }
+    });
   }
 
   // ==========================================
