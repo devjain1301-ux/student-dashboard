@@ -289,10 +289,9 @@ class UniSphereApp {
     });
 
     const menuToggle = document.getElementById("mobileMenuBtn");
-    const sidebar = document.getElementById("appSidebar");
-    if (menuToggle && sidebar) {
+    if (menuToggle) {
       menuToggle.addEventListener("click", () => {
-        sidebar.classList.toggle("open");
+        this.toggleSidebar();
       });
     }
 
@@ -310,8 +309,38 @@ class UniSphereApp {
     });
   }
 
+  toggleSidebar(forceOpen) {
+    const sidebar = document.getElementById("appSidebar");
+    const backdrop = document.getElementById("sidebarBackdrop");
+    if (!sidebar) return;
+
+    const isOpen = forceOpen !== undefined ? forceOpen : !sidebar.classList.contains("open");
+    if (isOpen) {
+      sidebar.classList.add("open");
+      if (backdrop) backdrop.classList.add("active");
+    } else {
+      sidebar.classList.remove("open");
+      if (backdrop) backdrop.classList.remove("active");
+    }
+  }
+
+  toggleMobileMoreDrawer(forceOpen) {
+    const drawer = document.getElementById("mobileMoreDrawer");
+    if (!drawer) return;
+
+    const isOpen = forceOpen !== undefined ? forceOpen : !drawer.classList.contains("active");
+    if (isOpen) {
+      drawer.classList.add("active");
+    } else {
+      drawer.classList.remove("active");
+    }
+  }
+
   navigateTo(viewId) {
     this.currentView = viewId;
+
+    this.toggleSidebar(false);
+    this.toggleMobileMoreDrawer(false);
 
     document.querySelectorAll(".view-section").forEach(sec => {
       sec.classList.remove("active");
