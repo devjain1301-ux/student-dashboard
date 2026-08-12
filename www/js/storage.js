@@ -183,7 +183,25 @@ class StorageManager {
       }
     }
 
+    this.lastSavedAt = Date.now();
     this.notifyListeners();
+    this.syncWithBackend();
+  }
+
+  async syncWithBackend() {
+    if (typeof window !== "undefined" && window.apiClient && window.apiClient.isAuthenticated()) {
+      try {
+        const lastSaved = this.lastSavedAt || Date.now();
+        const res = await window.apiClient.student.sync(this.data, lastSaved);
+        if (res && res.action === "server_to_client" && res.data) {
+          this.data = { ...DEFAULT_DATA, ...res.data };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
+          this.notifyListeners();
+        }
+      } catch (err) {
+        // Silently continue in local-first mode without interrupting user
+      }
+    }
   }
 
   resetToDefaults() {
@@ -212,6 +230,25 @@ class StorageManager {
   updateProfile(profileUpdate) {
     this.data.profile = { ...this.data.profile, ...profileUpdate };
     this.saveData();
+
+    // Background sync account details with backend if verified
+    if (typeof window !== "undefined" && window.apiClient && this.data.profile.email && this.data.profile.securityPin) {
+      const p = this.data.profile;
+      window.apiClient.auth.login(p.email, p.securityPin).catch(() => {
+        // If login fails because account is new, auto-register on backend
+        window.apiClient.auth.register({
+          name: p.name || "Student",
+          email: p.email,
+          phone: p.phone,
+          pin: p.securityPin,
+          stream: p.stream,
+          branch: p.branch,
+          semester: p.semester,
+          initialData: this.data
+        }).catch(() => {});
+      });
+    }
+
     return this.data.profile;
   }
 

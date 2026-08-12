@@ -4,6 +4,20 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Environment Secrets & Private Config
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Databases & User Uploads
+*.db
+*.sqlite
+*.sqlite3
+server/data/
+server/uploads/*
+!server/uploads/.gitkeep
+
 # System Generated & Logs
 .system_generated/
 *.log
@@ -17,3 +31,4 @@ ezgif-8f7bda3cef7f3271-jpg/
 Thumbs.db
 .vscode/
 .idea/
+

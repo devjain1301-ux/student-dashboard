@@ -7,6 +7,8 @@
   "scripts": {
     "dev": "serve -l 5173 .",
     "start": "serve .",
+    "server": "node server/server.js",
+    "start:server": "node server/server.js",
     "build:app": "node scripts/sync-app.js",
     "cap:sync": "node scripts/sync-app.js ; npx cap sync android",
     "cap:open:android": "npx cap open android",
@@ -28,5 +30,16 @@
     "@capacitor/cli": "^8.5.0",
     "@capacitor/core": "^8.5.0",
     "electron": "^43.4.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.6.2",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.2.0",
+    "sqlite3": "^6.0.1"
   }
 }
