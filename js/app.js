@@ -41,6 +41,12 @@ class UniSphereApp {
     this.currentPinBuffer = "";
     this.isVaultUnlocked = false;
 
+    // Calendar & Daily Planner State
+    this.currentCalendarDate = new Date();
+    this.selectedCalendarDate = new Date().toISOString().split("T")[0];
+    this.calendarActivityFilter = "all";
+    this.calendarVenueFilter = null;
+
     this.initTheme();
     this.initNavigation();
     this.initSearch();
@@ -360,6 +366,7 @@ class UniSphereApp {
 
     const titleMap = {
       dashboard: { title: "Overview Dashboard", sub: "Your complete college overview & real-time analytics" },
+      calendar: { title: "Calendar & Daily Planner", sub: "Daily activities, campus schedule & where you need to go" },
       timetable: { title: "Class Timetable", sub: "Daily & weekly lecture schedule with room indicators" },
       attendance: { title: "Attendance & 75% Rule", sub: "Subject-wise tracking and smart attendance predictor" },
       assignments: { title: "Assignments & Tasks", sub: "Track submissions, deadlines, and project deliverables" },
@@ -367,6 +374,7 @@ class UniSphereApp {
       notes: { title: "Subject Study Notes", sub: "Organized repository for formulas, codes, and cheatsheets" },
       events: { title: "College Events & Notices", sub: "Workshops, hackathons, fests, and official bulletins" },
       expenses: { title: "Student Expense Tracker", sub: "Hostel, PG, food & daily budget management" },
+      travel: { title: "Travel & Transit Journeys", sub: "Train, flight, bus & cab bookings with live countdowns" },
       profile: { title: "Student Profile & Academics", sub: "Personal academic records, CGPA progression & details" }
     };
 
@@ -420,6 +428,7 @@ class UniSphereApp {
     this.renderEvents();
     this.renderExpenses();
     this.renderTravel();
+    this.renderCalendar();
     this.renderProfile();
     this.updateNavBadges();
   }
@@ -2423,6 +2432,38 @@ class UniSphereApp {
       }
     });
 
+    // Add Daily Activity & Venue Form
+    const actForm = document.getElementById("addActivityForm");
+    actForm?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const title = document.getElementById("actInputTitle").value.trim();
+      const venue = document.getElementById("actInputVenue").value.trim();
+      const date = document.getElementById("actInputDate").value;
+      const startTime = document.getElementById("actInputStartTime").value;
+      const endTime = document.getElementById("actInputEndTime").value;
+      const category = document.getElementById("actInputCategory").value;
+      const venueCategory = document.getElementById("actInputVenueCategory").value;
+      const notes = document.getElementById("actInputNotes").value.trim();
+
+      const newAct = {
+        title,
+        venue,
+        date,
+        startTime,
+        endTime,
+        category,
+        venueCategory,
+        notes
+      };
+
+      this.storage.addCalendarActivity(newAct);
+      this.closeModal("modalAddActivity");
+      actForm.reset();
+      this.selectedCalendarDate = date;
+      this.renderCalendar();
+      this.showToast(`Saved stop: "${title}" at ${venue}! 📅`, "success");
+    });
+
     // Backdrop click to close modals (except mandatory login)
     document.querySelectorAll(".modal-backdrop").forEach(backdrop => {
       backdrop.addEventListener("click", (e) => {
@@ -2736,6 +2777,296 @@ class UniSphereApp {
       const lockDot = document.getElementById("pinLockStatusDot");
       if (lockDot) lockDot.style.background = "var(--text-subtle)";
       this.showToast("PIN protection disabled", "info");
+    }
+  }
+
+  // ==========================================
+  // MODULE 10: CALENDAR & "WHERE SHOULD I GO" DAILY PLANNER
+  // ==========================================
+  renderCalendar() {
+    const data = this.storage.data;
+    const activities = data.calendarActivities || [];
+
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    const currentYear = this.currentCalendarDate.getFullYear();
+    const currentMonth = this.currentCalendarDate.getMonth();
+
+    const titleEl = document.getElementById("calMonthYearDisplay");
+    if (titleEl) {
+      titleEl.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+    }
+
+    // Generate Calendar Matrix Grid
+    const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay(); // 0 is Sunday
+    const totalDaysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
+
+    const gridContainer = document.getElementById("calDaysGridContainer");
+    if (!gridContainer) return;
+
+    let gridHtml = "";
+
+    // 1. Previous Month Days
+    for (let i = firstDayIndex; i > 0; i--) {
+      const dayNum = prevMonthDays - i + 1;
+      gridHtml += `
+        <div class="cal-day-cell other-month">
+          <span class="cal-day-number">${dayNum}</span>
+        </div>
+      `;
+    }
+
+    const todayStr = new Date().toISOString().split("T")[0];
+
+    // 2. Current Month Days
+    for (let day = 1; day <= totalDaysInMonth; day++) {
+      const monthStr = String(currentMonth + 1).padStart(2, "0");
+      const dayStr = String(day).padStart(2, "0");
+      const dateKey = `${currentYear}-${monthStr}-${dayStr}`;
+
+      const isToday = dateKey === todayStr;
+      const isSelected = dateKey === this.selectedCalendarDate;
+
+      // Find activities on this day
+      const dayActs = activities.filter(a => a.date === dateKey);
+
+      // Dots
+      const dotsHtml = dayActs.slice(0, 3).map(a => `
+        <span class="cal-dot ${a.category || 'Lecture'}"></span>
+      `).join("");
+
+      gridHtml += `
+        <div class="cal-day-cell ${isToday ? 'today' : ''} ${isSelected ? 'active' : ''}" onclick="app.selectCalendarDay('${dateKey}')">
+          <span class="cal-day-number">${day}</span>
+          ${dotsHtml ? `<div class="cal-day-dots">${dotsHtml}</div>` : ''}
+        </div>
+      `;
+    }
+
+    // 3. Next Month Days to fill grid
+    const totalCellsFilled = firstDayIndex + totalDaysInMonth;
+    const remainingCells = (7 - (totalCellsFilled % 7)) % 7;
+    for (let j = 1; j <= remainingCells; j++) {
+      gridHtml += `
+        <div class="cal-day-cell other-month">
+          <span class="cal-day-number">${j}</span>
+        </div>
+      `;
+    }
+
+    gridContainer.innerHTML = gridHtml;
+
+    // Render Selected Day's Timeline & Live Destination
+    this.renderSelectedDayActivities();
+    this.updateLiveDestinationBanner();
+  }
+
+  renderSelectedDayActivities() {
+    const data = this.storage.data;
+    const activities = data.calendarActivities || [];
+
+    const selDate = new Date(this.selectedCalendarDate + "T00:00:00");
+    const options = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
+    const dateFormatted = isNaN(selDate.getTime()) ? this.selectedCalendarDate : selDate.toLocaleDateString('en-US', options);
+
+    let dayActivities = activities.filter(a => a.date === this.selectedCalendarDate);
+
+    // Apply Filter
+    if (this.calendarActivityFilter === "pending") {
+      dayActivities = dayActivities.filter(a => !a.completed);
+    } else if (this.calendarActivityFilter === "completed") {
+      dayActivities = dayActivities.filter(a => a.completed);
+    }
+
+    if (this.calendarVenueFilter) {
+      dayActivities = dayActivities.filter(a => a.venueCategory === this.calendarVenueFilter || a.category === this.calendarVenueFilter);
+    }
+
+    const titleEl = document.getElementById("calSelectedDateTitle");
+    const subEl = document.getElementById("calSelectedDateSub");
+    if (titleEl) titleEl.textContent = dateFormatted;
+    if (subEl) subEl.textContent = `${dayActivities.length} Scheduled Destination${dayActivities.length === 1 ? '' : 's'} & Activities`;
+
+    const container = document.getElementById("calDayActivitiesListContainer");
+    if (!container) return;
+
+    if (dayActivities.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center; padding: 2.5rem 1rem; color:var(--text-muted);">
+          <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">📅</div>
+          <p style="font-weight:700; margin-bottom:0.25rem; color:var(--text-heading);">No activities planned for this day</p>
+          <p style="font-size:0.78rem; margin-bottom:1rem;">Schedule classes, study sessions, gym, or campus stops</p>
+          <button class="btn btn-primary" style="font-size:0.8rem; padding:0.45rem 1rem;" onclick="app.openAddActivityModal('${this.selectedCalendarDate}')">
+            + Schedule First Stop & Venue
+          </button>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = dayActivities.map(act => {
+      let icon = "📍";
+      if (act.category === "Lecture") icon = "🏛️";
+      if (act.category === "Lab") icon = "💻";
+      if (act.category === "Study") icon = "📚";
+      if (act.category === "Food") icon = "🥪";
+      if (act.category === "Fitness") icon = "🏋️";
+      if (act.category === "Travel") icon = "🚆";
+      if (act.category === "Event") icon = "🎪";
+
+      return `
+        <div class="cal-act-card ${act.completed ? 'completed' : ''}">
+          <div class="cal-act-checkbox-wrapper">
+            <div class="cal-act-checkbox ${act.completed ? 'checked' : ''}" onclick="app.toggleActivityDone('${act.id}')" title="${act.completed ? 'Mark as Pending' : 'Mark as Completed'}">
+              ${act.completed ? '✓' : ''}
+            </div>
+          </div>
+          <div class="cal-act-body">
+            <div class="cal-act-top">
+              <div class="cal-act-title">${act.title}</div>
+              <div class="cal-act-time-pill">⏰ ${act.startTime} - ${act.endTime}</div>
+            </div>
+            
+            <div class="cal-act-venue-badge">
+              <span>${icon}</span>
+              <span>${act.venue}</span>
+            </div>
+
+            ${act.notes ? `<div class="cal-act-notes">${act.notes}</div>` : ''}
+          </div>
+          <button type="button" class="cal-act-delete-btn" onclick="app.deleteActivity('${act.id}')" title="Delete Activity">
+            ✕
+          </button>
+        </div>
+      `;
+    }).join("");
+  }
+
+  updateLiveDestinationBanner() {
+    const data = this.storage.data;
+    const activities = data.calendarActivities || [];
+    const todayStr = new Date().toISOString().split("T")[0];
+
+    const todayActs = activities.filter(a => a.date === todayStr);
+
+    const now = new Date();
+    const currentMins = now.getHours() * 60 + now.getMinutes();
+
+    let liveAct = null;
+    let nextAct = null;
+
+    todayActs.forEach(act => {
+      const [sh, sm] = (act.startTime || "09:00").split(":").map(Number);
+      const [eh, em] = (act.endTime || "10:00").split(":").map(Number);
+      const startMins = sh * 60 + sm;
+      const endMins = eh * 60 + em;
+
+      if (currentMins >= startMins && currentMins <= endMins && !liveAct) {
+        liveAct = act;
+      } else if (startMins > currentMins && (!nextAct || startMins < (nextAct._startMins || 9999))) {
+        nextAct = { ...act, _startMins: startMins };
+      }
+    });
+
+    const statusTag = document.getElementById("calLiveStatusTag");
+    const titleEl = document.getElementById("calLiveActivityTitle");
+    const venueEl = document.getElementById("calLiveVenue");
+    const timeEl = document.getElementById("calLiveTimeSlot");
+
+    if (liveAct) {
+      if (statusTag) statusTag.innerHTML = `🟢 <strong>HAPPENING RIGHT NOW</strong> • WHERE YOU SHOULD BE`;
+      if (titleEl) titleEl.textContent = liveAct.title;
+      if (venueEl) venueEl.textContent = `📍 ${liveAct.venue}`;
+      if (timeEl) timeEl.textContent = `⏰ ${liveAct.startTime} - ${liveAct.endTime}`;
+    } else if (nextAct) {
+      const minsLeft = nextAct._startMins - currentMins;
+      const hoursLeft = Math.floor(minsLeft / 60);
+      const remMins = minsLeft % 60;
+      const timeRemainingStr = hoursLeft > 0 ? `In ${hoursLeft}h ${remMins}m` : `In ${remMins} mins`;
+
+      if (statusTag) statusTag.innerHTML = `⏳ <strong>NEXT DESTINATION (${timeRemainingStr})</strong> • WHERE TO GO NEXT`;
+      if (titleEl) titleEl.textContent = nextAct.title;
+      if (venueEl) venueEl.textContent = `📍 ${nextAct.venue}`;
+      if (timeEl) timeEl.textContent = `⏰ ${nextAct.startTime} - ${nextAct.endTime}`;
+    } else if (todayActs.length > 0) {
+      if (statusTag) statusTag.innerHTML = `✨ <strong>ALL STOPS COMPLETED FOR TODAY</strong>`;
+      if (titleEl) titleEl.textContent = `Free time / Head back to Hostel Room`;
+      if (venueEl) venueEl.textContent = `📍 Hostel / Home`;
+      if (timeEl) timeEl.textContent = `Relax & prepare for tomorrow`;
+    } else {
+      if (statusTag) statusTag.innerHTML = `✨ <strong>NO STOPS SCHEDULED TODAY</strong>`;
+      if (titleEl) titleEl.textContent = `Campus is Open • Plan your study & activities`;
+      if (venueEl) venueEl.textContent = `📍 Central Library / Sports Complex`;
+      if (timeEl) timeEl.textContent = `Click "+ Write Daily Activity" to schedule`;
+    }
+  }
+
+  prevCalendarMonth() {
+    this.currentCalendarDate.setMonth(this.currentCalendarDate.getMonth() - 1);
+    this.renderCalendar();
+  }
+
+  nextCalendarMonth() {
+    this.currentCalendarDate.setMonth(this.currentCalendarDate.getMonth() + 1);
+    this.renderCalendar();
+  }
+
+  goToCalendarToday() {
+    this.currentCalendarDate = new Date();
+    this.selectedCalendarDate = new Date().toISOString().split("T")[0];
+    this.calendarVenueFilter = null;
+    this.renderCalendar();
+  }
+
+  selectCalendarDay(dateStr) {
+    this.selectedCalendarDate = dateStr;
+    this.calendarVenueFilter = null;
+    this.renderCalendar();
+  }
+
+  filterDayActivities(filterType, btnEl) {
+    this.calendarActivityFilter = filterType;
+    document.querySelectorAll(".cal-filter-chip").forEach(b => b.classList.remove("active"));
+    if (btnEl) btnEl.classList.add("active");
+    this.renderSelectedDayActivities();
+  }
+
+  filterActivitiesByVenue(venueCat) {
+    this.calendarVenueFilter = this.calendarVenueFilter === venueCat ? null : venueCat;
+    this.showToast(this.calendarVenueFilter ? `Filtering stops for: ${venueCat}` : "Showing all campus stops", "info");
+    this.renderSelectedDayActivities();
+  }
+
+  openAddActivityModal(defaultDate = null) {
+    const dateInput = document.getElementById("actInputDate");
+    if (dateInput) {
+      dateInput.value = defaultDate || this.selectedCalendarDate || new Date().toISOString().split("T")[0];
+    }
+    this.openModal("modalAddActivity");
+  }
+
+  setActivityVenuePreset(venueText, venueCat) {
+    const venueInput = document.getElementById("actInputVenue");
+    const catInput = document.getElementById("actInputVenueCategory");
+    if (venueInput) venueInput.value = venueText;
+    if (catInput) catInput.value = venueCat;
+  }
+
+  toggleActivityDone(actId) {
+    this.storage.toggleActivityCompleted(actId);
+    this.renderCalendar();
+    this.showToast("Activity status updated! ✅", "success");
+  }
+
+  deleteActivity(actId) {
+    if (confirm("Delete this scheduled activity stop?")) {
+      this.storage.deleteCalendarActivity(actId);
+      this.renderCalendar();
+      this.showToast("Activity removed", "info");
     }
   }
 

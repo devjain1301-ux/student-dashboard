@@ -49,6 +49,18 @@
           <span>Dashboard</span>
         </a>
 
+        <a href="#calendar" class="nav-link" data-nav-target="calendar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+            <circle cx="12" cy="15" r="2" fill="currentColor" />
+          </svg>
+          <span>Calendar & Where To Go</span>
+          <span class="nav-badge" style="background:rgba(16,185,129,0.15); color:#059669; font-weight:800;">Daily</span>
+        </a>
+
         <a href="#timetable" class="nav-link" data-nav-target="timetable">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -856,6 +868,177 @@
               </div>
             </div>
           </div>
+        <!-- ===================================================================== -->
+        <!-- VIEW 10: CALENDAR, DAILY ACTIVITY & "WHERE TO GO" ROUTE GUIDE          -->
+        <!-- ===================================================================== -->
+        <section class="view-section" id="view-calendar">
+          
+          <!-- Smart Live Campus Destination Banner -->
+          <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%); border: 1px solid rgba(79, 70, 229, 0.25);">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+              <div style="display:flex; align-items:center; gap:1rem;">
+                <div style="width:52px; height:52px; border-radius:14px; background:var(--primary-600); color:white; display:flex; align-items:center; justify-content:center; font-size:1.6rem; box-shadow:0 6px 16px var(--primary-glow);">
+                  📍
+                </div>
+                <div>
+                  <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem;">
+                    <span style="font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--primary-600);" id="calLiveStatusTag">🟢 Next Destination & Where To Go</span>
+                    <span style="font-size:0.72rem; color:var(--text-muted);">• Real-time Campus Route</span>
+                  </div>
+                  <h2 style="font-size:1.3rem; font-weight:800; color:var(--text-heading); margin-bottom:0.25rem;" id="calLiveActivityTitle">Loading today's next stop...</h2>
+                  <div style="display:flex; align-items:center; gap:0.75rem; font-size:0.86rem; color:var(--text-muted); flex-wrap:wrap;">
+                    <span id="calLiveVenue" style="color:var(--text-heading); font-weight:700;">📍 Academic Block A - Room 304</span>
+                    <span>•</span>
+                    <span id="calLiveTimeSlot" style="color:var(--primary-600); font-weight:700;">⏰ 09:00 AM - 10:30 AM</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; gap:0.6rem; align-items:center;">
+                <button class="btn btn-primary" onclick="app.openAddActivityModal()">
+                  + Write Daily Activity
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main 2-Column Calendar & Daily Activities Workspace -->
+          <div class="dashboard-grid-2col" style="grid-template-columns: 1.15fr 1fr; gap:1.5rem; align-items:start;">
+            
+            <!-- Left Column: Interactive Monthly Calendar & Campus Venues -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+              
+              <!-- Interactive Monthly Calendar Card -->
+              <div class="card">
+                <div class="card-header" style="flex-wrap:wrap; gap:0.75rem;">
+                  <div class="card-title-group">
+                    <div class="card-icon" style="background:rgba(79,70,229,0.12); color:var(--primary-600);">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <div>
+                      <h3 class="card-title" id="calMonthYearDisplay">August 2026</h3>
+                      <span class="card-subtitle">Select date to view activities & stops</span>
+                    </div>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:0.4rem;">
+                    <button type="button" class="btn btn-secondary" style="padding:0.35rem 0.65rem;" onclick="app.prevCalendarMonth()" title="Previous Month">◀</button>
+                    <button type="button" class="btn btn-secondary" style="padding:0.35rem 0.75rem; font-size:0.8rem; font-weight:700;" onclick="app.goToCalendarToday()">Today</button>
+                    <button type="button" class="btn btn-secondary" style="padding:0.35rem 0.65rem;" onclick="app.nextCalendarMonth()" title="Next Month">▶</button>
+                  </div>
+                </div>
+
+                <!-- Calendar Grid Component -->
+                <div class="calendar-matrix-wrapper">
+                  <div class="cal-weekdays-row">
+                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                  </div>
+                  <div class="cal-days-grid" id="calDaysGridContainer">
+                    <!-- Populated dynamically via JS -->
+                  </div>
+                </div>
+
+                <!-- Legend -->
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; margin-top:1rem; padding-top:0.75rem; border-top:1px solid var(--border-light); font-size:0.75rem; color:var(--text-muted);">
+                  <div style="display:flex; align-items:center; gap:0.35rem;"><span style="width:8px; height:8px; border-radius:50%; background:#4F46E5; display:inline-block;"></span> Lecture/Lab</div>
+                  <div style="display:flex; align-items:center; gap:0.35rem;"><span style="width:8px; height:8px; border-radius:50%; background:#0891b2; display:inline-block;"></span> Study/Library</div>
+                  <div style="display:flex; align-items:center; gap:0.35rem;"><span style="width:8px; height:8px; border-radius:50%; background:#059669; display:inline-block;"></span> Gym/Sports</div>
+                  <div style="display:flex; align-items:center; gap:0.35rem;"><span style="width:8px; height:8px; border-radius:50%; background:#d97706; display:inline-block;"></span> Travel/Food</div>
+                </div>
+              </div>
+
+              <!-- Campus "Where Should I Go?" Quick Venue Guide -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <div class="card-icon" style="background:rgba(6,182,212,0.15); color:#0891b2;">
+                      🧭
+                    </div>
+                    <div>
+                      <h3 class="card-title">Campus Where-To-Go Guide</h3>
+                      <span class="card-subtitle">Tap a popular campus stop to filter activities</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="venue-guide-grid">
+                  <div class="venue-guide-item" onclick="app.filterActivitiesByVenue('Classroom')">
+                    <div class="venue-icon">🏛️</div>
+                    <div class="venue-info">
+                      <strong>Classrooms & Halls</strong>
+                      <span>Block A, B & C lecture halls</span>
+                    </div>
+                  </div>
+                  <div class="venue-guide-item" onclick="app.filterActivitiesByVenue('Lab')">
+                    <div class="venue-icon">💻</div>
+                    <div class="venue-info">
+                      <strong>Computer & AI Labs</strong>
+                      <span>CSE / IT / Electronics Labs</span>
+                    </div>
+                  </div>
+                  <div class="venue-guide-item" onclick="app.filterActivitiesByVenue('Library')">
+                    <div class="venue-icon">📚</div>
+                    <div class="venue-info">
+                      <strong>Central Library</strong>
+                      <span>3rd Floor Quiet Study Zone</span>
+                    </div>
+                  </div>
+                  <div class="venue-guide-item" onclick="app.filterActivitiesByVenue('Food')">
+                    <div class="venue-icon">🥪</div>
+                    <div class="venue-info">
+                      <strong>Cafeteria & Mess</strong>
+                      <span>Food court & hostel dining</span>
+                    </div>
+                  </div>
+                  <div class="venue-guide-item" onclick="app.filterActivitiesByVenue('Sports')">
+                    <div class="venue-icon">🏟️</div>
+                    <div class="venue-info">
+                      <strong>Sports Arena & Gym</strong>
+                      <span>Badminton, Gym & Ground</span>
+                    </div>
+                  </div>
+                  <div class="venue-guide-item" onclick="app.filterActivitiesByVenue('Hostel')">
+                    <div class="venue-icon">🛏️</div>
+                    <div class="venue-info">
+                      <strong>Hostel & Dormitory</strong>
+                      <span>Room & Common Room</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Column: Selected Date's Activity Timeline & Route -->
+            <div class="card" style="position:sticky; top:85px;">
+              <div class="card-header" style="flex-wrap:wrap; gap:0.75rem;">
+                <div class="card-title-group">
+                  <div class="card-icon" style="background:rgba(16,185,129,0.15); color:#059669;">
+                    ⏱️
+                  </div>
+                  <div>
+                    <h3 class="card-title" id="calSelectedDateTitle">Today's Schedule</h3>
+                    <span class="card-subtitle" id="calSelectedDateSub">Where to go & planned activities</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary" style="font-size:0.8rem; font-weight:700; padding:0.35rem 0.75rem;" onclick="app.openAddActivityModal()">
+                  + Add Stop
+                </button>
+              </div>
+
+              <!-- Filter tabs for Day Activities -->
+              <div style="display:flex; gap:0.4rem; margin-bottom:1rem; overflow-x:auto; padding-bottom:0.25rem;">
+                <button class="cal-filter-chip active" id="filterTabAll" onclick="app.filterDayActivities('all', this)">All Stops</button>
+                <button class="cal-filter-chip" id="filterTabPending" onclick="app.filterDayActivities('pending', this)">Pending</button>
+                <button class="cal-filter-chip" id="filterTabDone" onclick="app.filterDayActivities('completed', this)">Done</button>
+              </div>
+
+              <!-- Chronological Activity Timeline List -->
+              <div class="cal-activities-timeline" id="calDayActivitiesListContainer">
+                <!-- Dynamically populated via JS -->
+              </div>
+            </div>
+
+          </div>
+
         </section>
 
       </div>
@@ -913,6 +1096,11 @@
         </div>
         
         <div class="drawer-grid">
+          <button class="drawer-item-btn" onclick="app.navigateTo('calendar'); app.toggleMobileMoreDrawer(false);">
+            <div class="drawer-icon" style="background:rgba(16,185,129,0.12); color:#059669;">📅</div>
+            <span>Calendar/Route</span>
+          </button>
+
           <button class="drawer-item-btn" onclick="app.navigateTo('assignments'); app.toggleMobileMoreDrawer(false);">
             <div class="drawer-icon" style="background:rgba(236,72,153,0.12); color:#ec4899;">📋</div>
             <span>Tasks & Due</span>
@@ -936,11 +1124,6 @@
           <button class="drawer-item-btn" onclick="app.navigateTo('profile'); app.toggleMobileMoreDrawer(false);">
             <div class="drawer-icon" style="background:rgba(79,70,229,0.12); color:var(--primary-600);">🎓</div>
             <span>Profile & PIN</span>
-          </button>
-
-          <button class="drawer-item-btn" onclick="app.lockApp(); app.toggleMobileMoreDrawer(false);">
-            <div class="drawer-icon" style="background:rgba(239,68,68,0.12); color:var(--danger);">🔒</div>
-            <span>Lock Vault</span>
           </button>
         </div>
 
@@ -1265,6 +1448,105 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalAddTravel')">Cancel</button>
           <button type="submit" class="btn btn-primary" style="font-weight:700; padding:0.6rem 1.25rem;">✓ OK, Save Journey</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Write Daily Activity & Venue / Where To Go -->
+  <div class="modal-backdrop" id="modalAddActivity">
+    <div class="modal-box" style="max-width: 600px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.65rem;">
+          <div style="font-size:1.4rem;">📅</div>
+          <div>
+            <h3 style="font-size: 1.2rem; font-weight: 800;">Write Daily Activity & Venue</h3>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Schedule what to do and where you need to go</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="app.closeModal('modalAddActivity')">✕</button>
+      </div>
+      <form id="addActivityForm">
+        <div class="modal-body" style="padding: 1.25rem 1.5rem;">
+          
+          <div class="form-group">
+            <label class="form-label">Activity Title / Task <span style="color:var(--danger);">*</span></label>
+            <input type="text" class="form-control" id="actInputTitle" placeholder="e.g. Operating Systems Lab Submission" required />
+          </div>
+
+          <!-- Where Should I Go / Venue -->
+          <div class="form-group" style="background:var(--bg-card-subtle); padding:0.85rem 1rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
+              <label class="form-label" style="margin-bottom:0; font-weight:700; color:var(--primary-700);">📍 Where Should I Go? (Location / Campus Room)</label>
+              <span style="font-size:0.72rem; color:var(--primary-600); font-weight:700;">Venue / Destination</span>
+            </div>
+            <input type="text" class="form-control" id="actInputVenue" placeholder="e.g. Lecture Hall 304, Academic Block A" style="margin-bottom:0.6rem;" required />
+            
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.35rem; font-weight:600;">⚡ Quick Campus Venue Helpers:</div>
+            <div style="display:flex; flex-wrap:wrap; gap:0.35rem;">
+              <button type="button" class="badge-tag" onclick="app.setActivityVenuePreset('Lecture Hall 301 (Academic Block A)', 'Classroom')">🏛️ Room 301</button>
+              <button type="button" class="badge-tag" onclick="app.setActivityVenuePreset('Computer Lab 2 (Department of CSE, 2nd Floor)', 'Lab')">💻 CS Lab 2</button>
+              <button type="button" class="badge-tag" onclick="app.setActivityVenuePreset('Central University Library (3rd Floor Quiet Zone)', 'Library')">📚 Library</button>
+              <button type="button" class="badge-tag" onclick="app.setActivityVenuePreset('Campus Cafeteria & Food Court', 'Food')">🥪 Canteen / Mess</button>
+              <button type="button" class="badge-tag" onclick="app.setActivityVenuePreset('Sports Arena & Gymnasium', 'Sports')">🏟️ Gym / Arena</button>
+              <button type="button" class="badge-tag" onclick="app.setActivityVenuePreset('Hostel Room / Dormitory', 'Hostel')">🛏️ Hostel Room</button>
+              <button type="button" class="badge-tag" onclick="app.setActivityVenuePreset('City Bus Stand / Railway Station', 'Transit')">🚆 Transit / Station</button>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1.2fr 1fr 1fr; gap:0.85rem;">
+            <div class="form-group">
+              <label class="form-label">Date <span style="color:var(--danger);">*</span></label>
+              <input type="date" class="form-control" id="actInputDate" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Start Time</label>
+              <input type="time" class="form-control" id="actInputStartTime" value="09:00" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">End Time</label>
+              <input type="time" class="form-control" id="actInputEndTime" value="10:30" required />
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.85rem;">
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select class="form-control" id="actInputCategory">
+                <option value="Lecture">🏛️ Lecture / Class</option>
+                <option value="Lab">💻 Lab / Practical</option>
+                <option value="Study">📚 Study / Library</option>
+                <option value="Food">🥪 Food / Mess</option>
+                <option value="Fitness">🏋️ Gym / Fitness</option>
+                <option value="Travel">🚆 Travel / Outing</option>
+                <option value="Event">🎪 Event / Notice</option>
+                <option value="Personal">⭐ Personal / Dorm</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Venue Category</label>
+              <select class="form-control" id="actInputVenueCategory">
+                <option value="Classroom">🏛️ Classroom / Hall</option>
+                <option value="Lab">💻 Computer / Tech Lab</option>
+                <option value="Library">📚 University Library</option>
+                <option value="Food">🥪 Canteen / Food Court</option>
+                <option value="Sports">🏟️ Sports Complex / Gym</option>
+                <option value="Hostel">🛏️ Hostel / PG</option>
+                <option value="Transit">🚆 Station / Bus Terminal</option>
+                <option value="Other">📍 Off-Campus / Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Instructions & What to Bring (Notes)</label>
+            <textarea class="form-control" id="actInputNotes" rows="2" placeholder="e.g. Bring lab record book, calculator, and laptop charger"></textarea>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modalAddActivity')">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="font-weight:700; padding:0.6rem 1.25rem;">✓ OK, Save Activity & Venue</button>
         </div>
       </form>
     </div>

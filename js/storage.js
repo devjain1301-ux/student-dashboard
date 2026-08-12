@@ -583,6 +583,48 @@ class StorageManager {
     }
   }
 
+  // --- Calendar & Daily Planner Operations ---
+  addCalendarActivity(activity) {
+    if (!this.data.calendarActivities) this.data.calendarActivities = [];
+    const newAct = {
+      id: "act_" + Date.now(),
+      date: activity.date || new Date().toISOString().split("T")[0],
+      startTime: activity.startTime || "09:00",
+      endTime: activity.endTime || "10:00",
+      title: activity.title || "Daily Activity",
+      venue: activity.venue || "Campus Main Hall",
+      venueCategory: activity.venueCategory || "Classroom",
+      category: activity.category || "General",
+      completed: false,
+      notes: activity.notes || ""
+    };
+    this.data.calendarActivities.push(newAct);
+    // Sort chronologically by date and startTime
+    this.data.calendarActivities.sort((a, b) => {
+      const timeA = `${a.date}T${a.startTime}`;
+      const timeB = `${b.date}T${b.startTime}`;
+      return timeA.localeCompare(timeB);
+    });
+    this.saveData();
+    return newAct;
+  }
+
+  toggleActivityCompleted(actId) {
+    if (!this.data.calendarActivities) return;
+    const act = this.data.calendarActivities.find(a => a.id === actId);
+    if (act) {
+      act.completed = !act.completed;
+      this.saveData();
+    }
+  }
+
+  deleteCalendarActivity(actId) {
+    if (this.data.calendarActivities) {
+      this.data.calendarActivities = this.data.calendarActivities.filter(a => a.id !== actId);
+      this.saveData();
+    }
+  }
+
   updateTravelStatus(tripId, status) {
     if (this.data.travel) {
       const trip = this.data.travel.find(t => t.id === tripId);

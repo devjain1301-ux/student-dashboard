@@ -255,5 +255,68 @@ const DEFAULT_DATA = {
     items: []
   },
 
-  travel: []
+  travel: [],
+
+  calendarActivities: [
+    {
+      id: "act_1",
+      date: new Date().toISOString().split("T")[0],
+      startTime: "09:00",
+      endTime: "10:30",
+      title: "Data Structures & Algorithms Lecture",
+      venue: "Lecture Hall 304 (Academic Block A)",
+      venueCategory: "Classroom",
+      category: "Lecture",
+      completed: true,
+      notes: "Topics: B-Trees and Graph DFS/BFS traversal algorithms"
+    },
+    {
+      id: "act_2",
+      date: new Date().toISOString().split("T")[0],
+      startTime: "11:00",
+      endTime: "12:30",
+      title: "DBMS & SQL Query Optimization Lab",
+      venue: "Computer Lab 2, 2nd Floor",
+      venueCategory: "Lab",
+      category: "Lab",
+      completed: false,
+      notes: "Submit Exercise 4 queries on subqueries and triggers"
+    },
+    {
+      id: "act_3",
+      date: new Date().toISOString().split("T")[0],
+      startTime: "13:00",
+      endTime: "14:00",
+      title: "Lunch with Batchmates & Project Discussion",
+      venue: "Central Student Canteen / Food Court",
+      venueCategory: "Food",
+      category: "Food",
+      completed: false,
+      notes: "Discuss frontend UI designs for capstone project"
+    },
+    {
+      id: "act_4",
+      date: new Date().toISOString().split("T")[0],
+      startTime: "15:00",
+      endTime: "17:00",
+      title: "Self Study & Research Paper Reading",
+      venue: "Central University Library, Quiet Zone 3rd Floor",
+      venueCategory: "Library",
+      category: "Study",
+      completed: false,
+      notes: "Prepare notes for next week's OS mid-term exam"
+    },
+    {
+      id: "act_5",
+      date: new Date().toISOString().split("T")[0],
+      startTime: "18:00",
+      endTime: "19:30",
+      title: "Evening Workout & Badminton Match",
+      venue: "Campus Sports Complex / Gymnasium",
+      venueCategory: "Sports",
+      category: "Fitness",
+      completed: false,
+      notes: "Cardio and badminton practice match"
+    }
+  ]
 };
